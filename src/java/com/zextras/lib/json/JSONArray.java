@@ -30,6 +30,7 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
   private static final ObjectWriter sJsonWriter;
   private static final ObjectWriter sJsonPrettyWriter;
 
+
   static
   {
     ObjectMapper om = new ObjectMapper();
@@ -162,6 +163,19 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
     return this;
   }
 
+  public JSONArray set( int i ,Object o )
+  {
+    if (i < size())
+    {
+      super.set(i, o);
+    }
+    else
+    {
+      super.add(i, o);
+    }
+    return this;
+  }
+
   public long getLong( int index ) throws JSONException
   {
     Object o = this.get( index );
@@ -180,7 +194,7 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
     {
       throw new JSONException("[JSONArray] Element "
                               + index
-                              + " is not a numeber");
+                              + " is not a number");
     }
   }
 
@@ -202,7 +216,7 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
     {
       throw new JSONException("[JSONArray] Element "
                                 + index
-                                + " is not a numeber");
+                                + " is not a number");
     }
   }
 
@@ -224,7 +238,51 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
     {
       throw new JSONException("[JSONArray] Element "
                                 + index
-                                + " is not a numeber");
+                                + " is not a number");
+    }
+  }
+
+  public double getDouble( int index ) throws JSONException
+  {
+    Object o = this.get( index );
+    try
+    {
+      if( o instanceof Number )
+      {
+        return ((Number) o).doubleValue();
+      }
+      else
+      {
+        return Double.parseDouble( (String)o );
+      }
+    }
+    catch( Exception ex )
+    {
+      throw new JSONException("[JSONArray] Element "
+              + index
+              + " is not a number");
+    }
+  }
+
+  public boolean getBoolean( int index ) throws JSONException
+  {
+    Object o = this.get( index );
+    try
+    {
+      if( o instanceof Boolean )
+      {
+        return ((Boolean) o).booleanValue();
+      }
+      else
+      {
+        return Boolean.parseBoolean( (String)o );
+      }
+    }
+    catch( Exception ex )
+    {
+      throw new JSONException("[JSONArray] Element "
+              + index
+              + " is not a number");
     }
   }
 
@@ -311,5 +369,8 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
     return s;
   }
 
-
+  public boolean isNull(int index)
+  {
+    return this.opt(index) == null;
+  }
 }
