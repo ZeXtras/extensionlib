@@ -20,6 +20,8 @@ package com.zextras.lib.activities;
 import com.zextras.lib.log.CurrentLogContext;
 import com.zextras.lib.log.LogContext;
 import com.zextras.lib.log.ZELogger;
+import org.openzal.zal.Utils;
+import org.openzal.zal.log.ZimbraLog;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -52,8 +54,8 @@ public class ActivityThread extends Thread implements ZELogger
 
   public void startActivity(ThreadSlot threadSlot, Runnable activity, LogContext logContext)
   {
-    //ZELog.core.debug(this,"startActivity");
-    //ZELog.core.debug(this,ZEUtils.currentStackTrace());
+    ZimbraLog.mailbox.debug("startActivity");
+    ZimbraLog.mailbox.debug(Utils.currentStackTrace());
     mLock.lock();
     try
     {
@@ -65,7 +67,7 @@ public class ActivityThread extends Thread implements ZELogger
     finally{
       mLock.unlock();
     }
-    //ZELog.core.debug(this,"startActivity end");
+    ZimbraLog.mailbox.debug("startActivity end");
   }
 
   public void cleanStop()
@@ -83,7 +85,7 @@ public class ActivityThread extends Thread implements ZELogger
 
   public void run()
   {
-    //ZELog.core.debug(this, "Starting new thread" );
+    ZimbraLog.mailbox.debug("Starting new thread" );
 
     while( true )
     {
@@ -142,12 +144,12 @@ public class ActivityThread extends Thread implements ZELogger
       }
       catch( Throwable ex )
       {
-        //ZELog.core.err( this, "Exception: "+ Utils.exceptionToString(ex) );
+        ZimbraLog.mailbox.error("Exception: "+ Utils.exceptionToString(ex) );
         try{
           Thread.sleep(60000);
         }catch(Throwable ex2){}
       }
     }
-    //ZELog.core.debug(this, "Shutting down thread" );
+    ZimbraLog.mailbox.debug("Shutting down thread" );
   }
 }
