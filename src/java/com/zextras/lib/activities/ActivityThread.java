@@ -54,8 +54,8 @@ public class ActivityThread extends Thread implements ZELogger
 
   public void startActivity(ThreadSlot threadSlot, Runnable activity, LogContext logContext)
   {
-    ZimbraLog.mailbox.debug("startActivity");
-    ZimbraLog.mailbox.debug(Utils.currentStackTrace());
+    //ZimbraLog.mailbox.debug("startActivity");
+    //ZimbraLog.mailbox.debug(Utils.currentStackTrace());
     mLock.lock();
     try
     {
@@ -67,7 +67,7 @@ public class ActivityThread extends Thread implements ZELogger
     finally{
       mLock.unlock();
     }
-    ZimbraLog.mailbox.debug("startActivity end");
+    //ZimbraLog.mailbox.debug("startActivity end");
   }
 
   public void cleanStop()
@@ -85,7 +85,7 @@ public class ActivityThread extends Thread implements ZELogger
 
   public void run()
   {
-    ZimbraLog.mailbox.debug("Starting new thread" );
+    //ZimbraLog.mailbox.debug("Starting new thread" );
 
     while( true )
     {
@@ -150,6 +150,6 @@ public class ActivityThread extends Thread implements ZELogger
         }catch(Throwable ex2){}
       }
     }
-    ZimbraLog.mailbox.debug("Shutting down thread" );
+    //ZimbraLog.mailbox.debug("Shutting down thread" );
   }
 }
