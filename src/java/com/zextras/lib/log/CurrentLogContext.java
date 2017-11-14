@@ -19,6 +19,7 @@ package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
 import org.jetbrains.annotations.NotNull;
+import org.openzal.zal.log.ZimbraLog;
 
 public abstract class CurrentLogContext
 {
@@ -84,7 +85,7 @@ public abstract class CurrentLogContext
         throw new RuntimeException("You cannot end a non-frozen LogContext.");
       }
       mLogContext = mLogContext.getParent();
-
+      mLogContext.populateZimbraLogContext();
 /*
   Remove log context when ending the last LogContext for the GC
 */
@@ -334,6 +335,12 @@ public abstract class CurrentLogContext
     public LogContext setProxyIp(String sourceIpAddress)
     {
       return mLogContext.setProxyIp(sourceIpAddress);
+    }
+
+    @Override
+    public void populateZimbraLogContext()
+    {
+      mLogContext.populateZimbraLogContext();
     }
   }
 }

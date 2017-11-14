@@ -19,6 +19,7 @@ package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
 import org.jetbrains.annotations.NotNull;
+import org.openzal.zal.log.ZimbraLog;
 
 public class RootLogContext implements LogContext
 {
@@ -260,6 +261,19 @@ public class RootLogContext implements LogContext
   public LogContext setProxyIp(String sourceIpAddress)
   {
     throw createCantSetException();
+  }
+
+  @Override
+  public void populateZimbraLogContext()
+  {
+    ZimbraLog.addToContext("tid", null);
+    ZimbraLog.addToContext("oip", null);
+    ZimbraLog.addToContext("eas", null);
+    ZimbraLog.addToContext("id", null);
+    ZimbraLog.addToContext("account", null);
+    ZimbraLog.addToContext("proxy", null);
+    ZimbraLog.addToContext("model", null);
+    ZimbraLog.addToContext("rid", null);
   }
 
   private RuntimeException createCantSetException()

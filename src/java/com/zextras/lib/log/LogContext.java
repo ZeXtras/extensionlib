@@ -70,4 +70,6 @@ public interface LogContext
   @NotNull LogContext setUserAddress(String userAddress);
 
   @NotNull LogContext setProxyIp(String sourceIpAddress);
+
+  void populateZimbraLogContext();
 }

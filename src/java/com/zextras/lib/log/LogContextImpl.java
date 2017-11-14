@@ -20,6 +20,7 @@ package com.zextras.lib.log;
 import org.openzal.zal.Account;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openzal.zal.log.ZimbraLog;
 
 public class LogContextImpl implements LogContext
 {
@@ -300,7 +301,24 @@ public class LogContextImpl implements LogContext
     {
       throw new RuntimeException("You cannot freeze an already frozen LogContext.");
     }
+    populateZimbraLogContext();
     mFrozen = true;
+  }
+
+  @Override
+  public void populateZimbraLogContext()
+  {
+    ZimbraLog.addToContext("tid", String.valueOf(Thread.currentThread().getId()));
+    ZimbraLog.addToContext("oip", getOriginalIp());
+    ZimbraLog.addToContext("eas", getEASVersion());
+    ZimbraLog.addToContext("id", getDeviceId());
+    ZimbraLog.addToContext("account", getAccountName());
+    ZimbraLog.addToContext("proxy", getProxyIp());
+    ZimbraLog.addToContext("model", getDeviceModel());
+    if (getRequestId() > 0)
+    {
+      ZimbraLog.addToContext("rid", String.valueOf(getRequestId()));
+    }
   }
 
   @NotNull
