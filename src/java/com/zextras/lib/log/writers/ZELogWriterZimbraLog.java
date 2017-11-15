@@ -21,6 +21,9 @@ import com.zextras.lib.log.LogContext;
 import com.zextras.lib.log.SeverityLevel;
 import org.openzal.zal.log.ZimbraLog;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class ZELogWriterZimbraLog extends ZELogWriter
 {
 public int getPriority()
