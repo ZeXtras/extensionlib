@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface LogContext
 {
+  @NotNull String get(String key);
   @NotNull String getAccountName();
   @NotNull String getAccountId();
   @NotNull String getDeviceId();
@@ -29,10 +30,11 @@ public interface LogContext
   @NotNull String getOperationId();
   @NotNull String getOperationName();
   @NotNull String getOperationModuleName();
-  int getRequestId();
+  @NotNull String getRequestId();
   @NotNull String getProxyIp();
 
 
+  LogContext set(String key, String value);
   @NotNull LogContext setAccountName(String mail);
   @NotNull LogContext setAccount(Account account);
   @NotNull LogContext setDeviceId(String deviceId);
@@ -72,4 +74,6 @@ public interface LogContext
   @NotNull LogContext setProxyIp(String sourceIpAddress);
 
   void populateZimbraLogContext();
+
+  void cleanZimbraLogContext();
 }

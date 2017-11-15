@@ -54,13 +54,6 @@ public int getPriority()
   {
     if( level.compareTo(getLevel()) >= 0 )
     {
-      ZimbraLog.clearContext();
-
-      if( !ctxt.getUserAddress().isEmpty() )
-      {
-        ZimbraLog.addToContext("user", ctxt.getUserAddress().toString());
-      }
-
       if( !ctxt.getLoggerName().isEmpty() )
       {
         msg = ctxt.getLoggerName() + ": " + msg;

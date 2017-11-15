@@ -84,8 +84,8 @@ public abstract class CurrentLogContext
       {
         throw new RuntimeException("You cannot end a non-frozen LogContext.");
       }
+      mLogContext.cleanZimbraLogContext();
       mLogContext = mLogContext.getParent();
-      mLogContext.populateZimbraLogContext();
 /*
   Remove log context when ending the last LogContext for the GC
 */
@@ -95,6 +95,13 @@ public abstract class CurrentLogContext
       }
 
       return mLogContext;
+    }
+
+    @NotNull
+    @Override
+    public String get(String key)
+    {
+      return mLogContext.get(key);
     }
 
     @NotNull
@@ -146,8 +153,9 @@ public abstract class CurrentLogContext
       return mLogContext.getOperationModuleName();
     }
 
+    @NotNull
     @Override
-    public int getRequestId()
+    public String getRequestId()
     {
       return mLogContext.getRequestId();
     }
@@ -157,6 +165,12 @@ public abstract class CurrentLogContext
     public String getProxyIp()
     {
       return mLogContext.getProxyIp();
+    }
+
+    @Override
+    public LogContext set(@NotNull String key, @NotNull String value)
+    {
+      return mLogContext.set(key, value);
     }
 
     @NotNull
@@ -341,6 +355,12 @@ public abstract class CurrentLogContext
     public void populateZimbraLogContext()
     {
       mLogContext.populateZimbraLogContext();
+    }
+
+    @Override
+    public void cleanZimbraLogContext()
+    {
+      mLogContext.cleanZimbraLogContext();
     }
   }
 }

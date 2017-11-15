@@ -25,6 +25,13 @@ public class RootLogContext implements LogContext
 {
   @NotNull
   @Override
+  public String get(String key)
+  {
+    return "";
+  }
+
+  @NotNull
+  @Override
   public String getAccountName()
   {
     return "";
@@ -73,9 +80,9 @@ public class RootLogContext implements LogContext
   }
 
   @Override
-  public int getRequestId()
+  public String getRequestId()
   {
-    return 0;
+    return "";
   }
 
   @NotNull
@@ -83,6 +90,12 @@ public class RootLogContext implements LogContext
   public String getProxyIp()
   {
     return "";
+  }
+
+  @Override
+  public LogContext set(@NotNull String key, @NotNull String value)
+  {
+    throw createCantSetException();
   }
 
   @NotNull
@@ -266,14 +279,13 @@ public class RootLogContext implements LogContext
   @Override
   public void populateZimbraLogContext()
   {
-    ZimbraLog.addToContext("tid", null);
-    ZimbraLog.addToContext("oip", null);
-    ZimbraLog.addToContext("eas", null);
-    ZimbraLog.addToContext("id", null);
-    ZimbraLog.addToContext("account", null);
-    ZimbraLog.addToContext("proxy", null);
-    ZimbraLog.addToContext("model", null);
-    ZimbraLog.addToContext("rid", null);
+    ZimbraLog.clearContext();
+  }
+
+  @Override
+  public void cleanZimbraLogContext()
+  {
+    ZimbraLog.clearContext();
   }
 
   private RuntimeException createCantSetException()
