@@ -271,6 +271,7 @@ public class LogContextImpl implements LogContext
   public void populateZimbraLogContext()
   {
     mParent.populateZimbraLogContext();
+    ZimbraLog.addToContext("tid", String.valueOf(Thread.currentThread().getId()));
     for (Map.Entry<String, String> entry : mContext.entrySet())
     {
       ZimbraLog.addToContext(entry.getKey(), entry.getValue());
