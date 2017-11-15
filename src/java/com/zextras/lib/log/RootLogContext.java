@@ -19,9 +19,17 @@ package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
 import org.jetbrains.annotations.NotNull;
+import org.openzal.zal.log.ZimbraLog;
 
 public class RootLogContext implements LogContext
 {
+  @NotNull
+  @Override
+  public String get(String key)
+  {
+    return "";
+  }
+
   @NotNull
   @Override
   public String getAccountName()
@@ -72,9 +80,9 @@ public class RootLogContext implements LogContext
   }
 
   @Override
-  public int getRequestId()
+  public String getRequestId()
   {
-    return 0;
+    return "";
   }
 
   @NotNull
@@ -82,6 +90,12 @@ public class RootLogContext implements LogContext
   public String getProxyIp()
   {
     return "";
+  }
+
+  @Override
+  public LogContext set(@NotNull String key, @NotNull String value)
+  {
+    throw createCantSetException();
   }
 
   @NotNull
@@ -260,6 +274,18 @@ public class RootLogContext implements LogContext
   public LogContext setProxyIp(String sourceIpAddress)
   {
     throw createCantSetException();
+  }
+
+  @Override
+  public void populateZimbraLogContext()
+  {
+    ZimbraLog.clearContext();
+  }
+
+  @Override
+  public void cleanZimbraLogContext()
+  {
+    ZimbraLog.clearContext();
   }
 
   private RuntimeException createCantSetException()

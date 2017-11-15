@@ -20,48 +20,28 @@ package com.zextras.lib.log;
 import org.openzal.zal.Account;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.openzal.zal.log.ZimbraLog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LogContextImpl implements LogContext
 {
-  private       String        mAccountName;
-  private       String        mIP;
-  private       String        mDeviceId;
-  private       String        mDeviceModel;
-  private       String        mOperationId;
-  private       String        mOperationName;
+  private final HashMap<String, String> mContext;
   private final LogContext    mParent;
   private       boolean       mFrozen;
   private       SeverityLevel mSeverityLevel;
   private       Boolean       mHasDedicated;
   private       String        mLoggerName;
-  private       String        mOperationModuleName;
-  private       String        mAccountId;
-  private       String        mOriginalIp;
-  private       String        mEasVersion;
-  private       int           mRequestId;
-  private       String        mUserAddress;
-  private       String        mProxyIp;
 
   public LogContextImpl(@NotNull LogContext parent)
   {
     mParent = parent;
-    mAccountName = "";
-    mAccountId = "";
-    mIP = "";
-    mOriginalIp = "";
-    mEasVersion = "";
-    mDeviceId = "";
-    mDeviceModel = "";
-    mOperationId = "";
-    mOperationName = "";
+    mContext = new HashMap<String, String>();
     mLoggerName = "";
-    mUserAddress = "";
-    mProxyIp = "";
-
     mFrozen = false;
     mHasDedicated = null;
     mSeverityLevel = null;
-    mOperationModuleName = null;
   }
 
   private String emptyWhenNull( String s )
@@ -69,81 +49,68 @@ public class LogContextImpl implements LogContext
     return (s == null) ? "" : s;
   }
 
+  private boolean has(String key)
+  {
+    return mContext.containsKey(key) || (mContext.get(key) != null && !mContext.get(key).isEmpty());
+  }
+
+  public String get(String key)
+  {
+    if (!has(key))
+    {
+      return mParent.get(key);
+    }
+
+    return mContext.get(key);
+  }
+
   @NotNull
   @Override
   public String getAccountName()
   {
-    if (mAccountName.isEmpty())
-    {
-      return mParent.getAccountName();
-    }
-    return mAccountName;
+    return get("name");
   }
 
   @NotNull
   @Override
   public String getAccountId()
   {
-    if (mAccountId.isEmpty())
-    {
-      return mParent.getAccountName();
-    }
-    return mAccountId;
+    return get("accountId");
   }
 
   @NotNull
   @Override
   public String getDeviceId()
   {
-    if (mDeviceId.isEmpty())
-    {
-      return mParent.getDeviceId();
-    }
-    return mDeviceId;
+    return get("deviceId");
   }
 
   @NotNull
   @Override
   public String getDeviceModel()
   {
-    if (mDeviceModel.isEmpty())
-    {
-      return mParent.getDeviceModel();
-    }
-    return mDeviceModel;
+    return get("model");
   }
 
   @NotNull
   @Override
   public String getOperationId()
   {
-    if (mOperationId.isEmpty())
-    {
-      return mParent.getOperationId();
-    }
-    return mOperationId;
+    return get("operationId");
   }
 
   @NotNull
   @Override
   public String getOperationName()
   {
-    if (mOperationName.isEmpty())
-    {
-      return mParent.getOperationName();
-    }
-    return mOperationName;
+    return get("operation");
   }
 
   @NotNull
   @Override
   public String getOperationModuleName()
   {
-    if (mOperationModuleName == null)
-    {
-      return mParent.getOperationModuleName();
-    }
-    return mOperationModuleName;
+    return get("module");
   }
 
   @NotNull
@@ -153,7 +120,7 @@ public class LogContextImpl implements LogContext
     canSetCheck();
     if (account != null)
     {
-      mAccountName = account;
+      return set("name", account);
     }
     return this;
   }
@@ -166,7 +133,7 @@ public class LogContextImpl implements LogContext
     if (account != null)
     {
       setAccountName(account.getName());
-      mAccountId = account.getId();
+      set("accountId", account.getId());
     }
     return this;
   }
@@ -175,18 +142,14 @@ public class LogContextImpl implements LogContext
   @Override
   public LogContext setDeviceId(String deviceId)
   {
-    canSetCheck();
-    mDeviceId = emptyWhenNull(deviceId);
-    return this;
+    return set("deviceId", emptyWhenNull(deviceId));
   }
 
   @NotNull
   @Override
   public LogContext setDeviceModel(String deviceModel)
   {
-    canSetCheck();
-    mDeviceModel = emptyWhenNull(deviceModel);
-    return this;
+    return set("model", emptyWhenNull(deviceModel));
   }
 
   @NotNull
@@ -198,7 +161,7 @@ public class LogContextImpl implements LogContext
     canSetCheck();
     if (operationId != null)
     {
-      mOperationId = operationId;
+      return set("operationId", operationId);
     }
     return this;
   }
@@ -212,7 +175,7 @@ public class LogContextImpl implements LogContext
     canSetCheck();
     if (operationName != null)
     {
-      mOperationName = operationName;
+      return set("operation", operationName);
     }
     return this;
   }
@@ -226,7 +189,7 @@ public class LogContextImpl implements LogContext
     canSetCheck();
     if (moduleName != null)
     {
-      mOperationModuleName = moduleName;
+      set("module", moduleName);
     }
     return this;
   }
@@ -300,7 +263,28 @@ public class LogContextImpl implements LogContext
     {
       throw new RuntimeException("You cannot freeze an already frozen LogContext.");
     }
+    populateZimbraLogContext();
     mFrozen = true;
+  }
+
+  @Override
+  public void populateZimbraLogContext()
+  {
+    mParent.populateZimbraLogContext();
+    for (Map.Entry<String, String> entry : mContext.entrySet())
+    {
+      ZimbraLog.addToContext(entry.getKey(), entry.getValue());
+    }
+  }
+
+  @Override
+  public void cleanZimbraLogContext()
+  {
+    for (Map.Entry<String, String> entry : mContext.entrySet())
+    {
+      ZimbraLog.addToContext(entry.getKey(), null);
+    }
+    mParent.populateZimbraLogContext();
   }
 
   @NotNull
@@ -337,91 +321,77 @@ public class LogContextImpl implements LogContext
   @Override
   public String getOriginalIp()
   {
-    if (mOriginalIp.isEmpty())
-    {
-      return mParent.getOriginalIp();
-    }
-    return mOriginalIp;
+    return get("oip");
   }
 
   @NotNull
   @Override
   public String getEASVersion()
   {
-    if (mEasVersion.isEmpty())
-    {
-      return mParent.getEASVersion();
-    }
-    return mEasVersion;
+    return get("eas");
   }
 
   @NotNull
   @Override
   public String getUserAddress()
   {
-    return mUserAddress;
+    return get("user");
   }
 
   @NotNull
   @Override
   public LogContext setOriginalIp(String originalIp)
   {
-    canSetCheck();
-    mOriginalIp = originalIp;
-    return this;
+    return set("oip", originalIp);
   }
 
   @NotNull
   @Override
   public LogContext setEASVersion(String easVersion)
   {
-    canSetCheck();
-    mEasVersion = easVersion;
-    return this;
+    return set("eas", easVersion);
   }
 
   @NotNull
   @Override
   public LogContext setRequestId(int id)
   {
-    canSetCheck();
-    mRequestId = id;
-    return this;
+    return set("rid", String.valueOf(id));
   }
 
   @NotNull
   @Override
   public LogContext setUserAddress(String userAddress)
   {
-    canSetCheck();
-    mUserAddress = userAddress;
-    /* if (user != null)
-    {
-      mUserAddress = user.getAddress().toString();
-    } */
-    return this;
+    return set("user", userAddress);
   }
 
   @NotNull
   @Override
   public LogContext setProxyIp(String sourceIpAddress)
   {
-    canSetCheck();
-    mProxyIp = sourceIpAddress;
-    return this;
+    return set("proxy", sourceIpAddress);
   }
 
   @Override
-  public int getRequestId()
+  public String getRequestId()
   {
-    return mRequestId;
+    return get("rid");
   }
 
   @NotNull
   @Override
   public String getProxyIp()
   {
-    return mProxyIp;
+    return get("proxy");
+  }
+
+  @Override
+  public LogContext set(@NotNull String key, String value)
+  {
+    canSetCheck();
+    mContext.put(key, value == null ? "" : value);
+    return this;
   }
 
   private void canSetCheck()
