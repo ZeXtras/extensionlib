@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openzal.zal.log.ZimbraLog;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LogContextImpl implements LogContext
@@ -37,7 +38,7 @@ public class LogContextImpl implements LogContext
   public LogContextImpl(@NotNull LogContext parent)
   {
     mParent = parent;
-    mContext = new HashMap<String, String>();
+    mContext = new LinkedHashMap<String, String>();
     mLoggerName = "";
     mFrozen = false;
     mHasDedicated = null;
@@ -68,7 +69,7 @@ public class LogContextImpl implements LogContext
   @Override
   public String getAccountName()
   {
-    return get("name");
+    return get("account");
   }
 
   @NotNull
@@ -82,7 +83,7 @@ public class LogContextImpl implements LogContext
   @Override
   public String getDeviceId()
   {
-    return get("deviceId");
+    return get("id");
   }
 
   @NotNull
@@ -120,7 +121,7 @@ public class LogContextImpl implements LogContext
     canSetCheck();
     if (account != null)
     {
-      return set("name", account);
+      return set("account", account);
     }
     return this;
   }
@@ -142,7 +143,7 @@ public class LogContextImpl implements LogContext
   @Override
   public LogContext setDeviceId(String deviceId)
   {
-    return set("deviceId", emptyWhenNull(deviceId));
+    return set("id", emptyWhenNull(deviceId));
   }
 
   @NotNull
