@@ -77,6 +77,11 @@ public class Optional<T>
     }
   }
 
+  public static <X> Optional<X> empty()
+  {
+    return sEmptyInstance;
+  }
+
   public boolean hasValue()
   {
     return mValue != null;
