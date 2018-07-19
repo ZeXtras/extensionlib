@@ -17,6 +17,9 @@
 
 package com.zextras.lib.Error;
 
+import com.zextras.lib.Container;
+import com.zextras.lib.ContainerImpl;
+import com.zextras.lib.ContainerListContainer;
 import org.openzal.zal.lib.ActualClock;
 import com.zextras.lib.log.SeverityLevel;
 import com.zextras.lib.json.JSONArray;
@@ -111,7 +114,7 @@ public class ZxError extends Exception
     return this;
   }
 
-  protected Object getDetail(String key)
+  protected String getDetail(String key)
   {
     return mDetailsMap.get(key);
   }
@@ -136,6 +139,42 @@ public class ZxError extends Exception
     obj.put(KEY_STACKTRACE, trace);
     obj.put(KEY_CAUSE, encodeSubCause(getCause()));
     return obj;
+  }
+
+  public Container toContainer()
+  {
+    Container obj = new ContainerImpl();
+    obj.putString(KEY_CODE, mCode.getCodeString());
+    obj.putString(KEY_MESSAGE, mCode.getMessage());
+    obj.putLong(KEY_ERROR_TIME, mCurrentTime.now());
+    Container details = new ContainerImpl();
+    for (String detailKey : getDetails().keySet())
+    {
+      details.putString(detailKey, getDetail(detailKey));
+    }
+    obj.putContainer(KEY_DETAILS, details);
+    obj.putListContainer(KEY_STACKTRACE, buildTrace(getStackTrace()));
+    Container cause =  buildContainerFromException(getCause());
+    if (cause != null)
+    {
+      obj.putContainer(KEY_CAUSE, cause);
+    }
+    return obj;
+  }
+
+  private Iterable<Container> buildTrace(StackTraceElement[] stackTrace)
+  {
+    ContainerListContainer trace = new ContainerListContainer();
+    for (StackTraceElement stackEl : getStackTrace()) {
+      Container element = new ContainerImpl();
+      element.putString("className", stackEl.getClassName());
+      element.putString("fileName", stackEl.getFileName());
+      element.putLong("lineNumber", stackEl.getLineNumber());
+      element.putString("methodName", stackEl.getMethodName());
+      element.putBoolean("nativeMethod", stackEl.isNativeMethod());
+      trace.add(element);
+    }
+    return trace;
   }
 
   public ZxError setDetail(String key, List<String> val)
@@ -175,6 +214,26 @@ public class ZxError extends Exception
     result = 31 * result + mDetailsMap.hashCode();
     result = 31 * result + mSeverityLevel.hashCode();
     return result;
+  }
+
+  private Container buildContainerFromException(Throwable t)
+  {
+    Container errorObj = new ContainerImpl();
+    if (t != null)
+    {
+      errorObj.putString(KEY_MESSAGE, t.getMessage());
+      errorObj.putListContainer(KEY_STACKTRACE, buildTrace(t.getStackTrace()));
+      Container cause = buildContainerFromException(t.getCause());
+      if (cause != null)
+      {
+        errorObj.putContainer(KEY_CAUSE, cause);
+      }
+      return errorObj;
+    }
+    else
+    {
+      return null;
+    }
   }
 
   private JSONObject encodeSubCause(Throwable e)
