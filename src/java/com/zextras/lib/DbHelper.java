@@ -252,7 +252,7 @@ public class DbHelper
   public <T> Iterator<T> buildIterator(
     String query,
     ParametersFactory parametersFactory,
-    ResultSetFactory<T> resultSetFactory,
+    final ResultSetFactory<T> resultSetFactory,
     int blockSize
   ) throws SQLException
   {
