@@ -22,7 +22,10 @@ public class DbPrefetchIterator<T> implements Iterator<T>
       while( resultSet.next() )
       {
         T item = mResultSetParser.readFromResultSet(resultSet);
-        mCurrentList.add(item);
+        if (item != null)
+        {
+          mCurrentList.add(item);
+        }
       }
       mStart += mQueryBlockSize;
       mIterator = mCurrentList.iterator();

@@ -1,15 +1,21 @@
 package com.zextras.lib;
 
+import com.zextras.lib.Error.UnableToObtainDBConnectionError;
 import com.zextras.lib.db.DbHandler;
 import com.zextras.lib.log.ChatLog;
+import com.zextras.lib.sql.DbPrefetchIterator;
+import com.zextras.lib.sql.QueryExecutor;
+import com.zextras.lib.sql.ResultSetParser;
 import org.apache.commons.dbutils.DbUtils;
 import org.openzal.zal.Utils;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 public class DbHelper
 {
@@ -97,19 +103,20 @@ public class DbHelper
   static class NoParameters implements ParametersFactory
   {
     @Override
-    public void create(PreparedStatement preparedStatement) throws SQLException
+    public int init(PreparedStatement preparedStatement) throws SQLException
     {
+      return 1;
     }
   }
 
-  public interface ResultSetFactory
+  public interface ResultSetFactory<T>
   {
-    void create(ResultSet rs) throws Exception;
+    T create(ResultSet rs) throws Exception;
   }
 
   public interface ParametersFactory
   {
-    void create(PreparedStatement preparedStatement) throws SQLException;
+    int init(PreparedStatement preparedStatement) throws SQLException;
   }
 
   public DbConnection beginTransaction() throws SQLException
@@ -175,7 +182,7 @@ public class DbHelper
     try
     {
       statement = connection.prepareStatement(query);
-      parametersFactory.create(statement);
+      parametersFactory.init(statement);
       rs = statement.executeQuery();
       while (rs.next())
       {
@@ -232,7 +239,7 @@ public class DbHelper
     try
     {
       statement = connection.prepareStatement(query);
-      parametersFactory.create(statement);
+      parametersFactory.init(statement);
       return statement.executeUpdate();
     }
     finally
@@ -240,5 +247,51 @@ public class DbHelper
       DbUtils.closeQuietly(rs);
       DbUtils.closeQuietly(statement);
     }
+  }
+
+  public <T> Iterator<T> buildIterator(
+    String query,
+    ParametersFactory parametersFactory,
+    ResultSetFactory<T> resultSetFactory,
+    int blockSize
+  ) throws SQLException
+  {
+    final Connection connection = mDbHandler.getConnection();
+    final PreparedStatement preparedStatement = connection.prepareStatement(query);
+    final int i = parametersFactory.init(preparedStatement);
+    return new DbPrefetchIterator<T>(
+      new QueryExecutor()
+      {
+        @Override
+        public ResultSet executeQuery(int start, int size) throws UnableToObtainDBConnectionError, SQLException
+        {
+          preparedStatement.setInt(i, start);
+          preparedStatement.setInt(i+1, size);
+          return preparedStatement.executeQuery();
+        }
+
+        @Override
+        public void close() throws IOException
+        {
+          DbUtils.closeQuietly(connection);
+        }
+      },
+      new ResultSetParser<T>()
+      {
+        @Override
+        public T readFromResultSet(ResultSet resultSet) throws SQLException
+        {
+          try
+          {
+            return resultSetFactory.create(resultSet);
+          }
+          catch (Exception e)
+          {
+            throw new SQLException(e);
+          }
+        }
+      },
+      blockSize
+    );
   }
 }
