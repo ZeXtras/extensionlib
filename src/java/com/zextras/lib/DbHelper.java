@@ -8,6 +8,7 @@ import com.zextras.lib.sql.QueryExecutor;
 import com.zextras.lib.sql.ResultSetParser;
 import org.apache.commons.dbutils.DbUtils;
 import org.openzal.zal.Utils;
+import org.openzal.zal.log.ZimbraLog;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class DbHelper
 {
@@ -249,7 +251,7 @@ public class DbHelper
     }
   }
 
-  public <T> Iterator<T> buildIterator(
+  public <T> Iterator<T> buildGlobalIterator(
     String query,
     ParametersFactory parametersFactory,
     final ResultSetFactory<T> resultSetFactory,
@@ -293,5 +295,55 @@ public class DbHelper
       },
       blockSize
     );
+  }
+
+  public <T> Iterator<T> buildIterator(
+    String query,
+    ParametersFactory parametersFactory,
+    final ResultSetFactory<T> resultSetFactory
+  ) throws SQLException
+  {
+    final Connection connection = mDbHandler.getConnection();
+    final PreparedStatement preparedStatement = connection.prepareStatement(query);
+    parametersFactory.init(preparedStatement);
+    final ResultSet resultSet = preparedStatement.executeQuery();
+    return new Iterator<T>()
+    {
+      T mNext = null;
+      @Override
+      public boolean hasNext()
+      {
+        try
+        {
+          while (mNext != null && resultSet.next())
+          {
+            mNext = resultSetFactory.create(resultSet);
+          }
+
+          return mNext != null;
+        }
+        catch (Exception e)
+        {
+          ZimbraLog.mailbox.error(Utils.exceptionToString(e));
+        }
+        return false;
+      }
+
+      @Override
+      public T next()
+      {
+        if (mNext == null)
+        {
+          throw new NoSuchElementException();
+        }
+        return mNext;
+      }
+
+      @Override
+      public void remove()
+      {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 }
