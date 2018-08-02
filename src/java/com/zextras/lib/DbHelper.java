@@ -315,7 +315,7 @@ public class DbHelper
       {
         try
         {
-          while (mNext != null && resultSet.next())
+          while (mNext == null && resultSet.next())
           {
             mNext = resultSetFactory.create(resultSet);
           }
@@ -336,7 +336,9 @@ public class DbHelper
         {
           throw new NoSuchElementException();
         }
-        return mNext;
+        T next = mNext;
+        mNext = null;
+        return next;
       }
 
       @Override
