@@ -29,7 +29,7 @@ public abstract class ThreadService implements Service, Runnable, ZELogger
   private Thread mThread;
   private Lock mLock = new ReentrantLock();
 
-  public final boolean isStopped()
+  public boolean isStopped()
   {
     mLock.lock();
     try
@@ -56,7 +56,7 @@ public abstract class ThreadService implements Service, Runnable, ZELogger
   }
 
   @Override
-  public final void start() throws ServiceStartException
+  public void start() throws ServiceStartException
   {
     mStopped = false;
     renewThread();
@@ -64,12 +64,12 @@ public abstract class ThreadService implements Service, Runnable, ZELogger
   }
 
   @Override
-  public final void stop()
+  public void stop()
   {
     cleanStop();
   }
 
-  public final void cleanStop()
+  public void cleanStop()
   {
     mLock.lock();
     try
