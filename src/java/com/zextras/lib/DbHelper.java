@@ -7,6 +7,7 @@ import com.zextras.lib.sql.DbPrefetchIterator;
 import com.zextras.lib.sql.QueryExecutor;
 import com.zextras.lib.sql.ResultSetParser;
 import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.io.IOUtils;
 import org.openzal.zal.Utils;
 import org.openzal.zal.log.ZimbraLog;
 
@@ -16,7 +17,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class DbHelper
@@ -163,7 +167,7 @@ public class DbHelper
     }
     finally
     {
-      connection.close();
+      IOUtils.closeQuietly(connection);
     }
   }
 
@@ -304,48 +308,33 @@ public class DbHelper
   ) throws SQLException
   {
     final Connection connection = mDbHandler.getConnection();
-    final PreparedStatement preparedStatement = connection.prepareStatement(query);
-    parametersFactory.init(preparedStatement);
-    final ResultSet resultSet = preparedStatement.executeQuery();
-    return new Iterator<T>()
+    List<T> list = new ArrayList<T>();
+    try
     {
-      T mNext = null;
-      @Override
-      public boolean hasNext()
+      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      parametersFactory.init(preparedStatement);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      while (resultSet.next())
       {
         try
         {
-          while (mNext == null && resultSet.next())
+          T element = resultSetFactory.create(resultSet);
+          if (element != null)
           {
-            mNext = resultSetFactory.create(resultSet);
+            list.add(element);
           }
-
-          return mNext != null;
         }
         catch (Exception e)
         {
           ZimbraLog.mailbox.error(Utils.exceptionToString(e));
         }
-        return false;
       }
 
-      @Override
-      public T next()
-      {
-        if (mNext == null)
-        {
-          throw new NoSuchElementException();
-        }
-        T next = mNext;
-        mNext = null;
-        return next;
-      }
-
-      @Override
-      public void remove()
-      {
-        throw new UnsupportedOperationException();
-      }
-    };
+      return list.iterator();
+    }
+    finally
+    {
+      DbUtils.closeQuietly(connection);
+    }
   }
 }
