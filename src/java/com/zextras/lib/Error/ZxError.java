@@ -143,6 +143,11 @@ public class ZxError extends Exception
 
   public Container toContainer()
   {
+    return toContainer(false);
+  }
+
+  public Container toContainer(boolean includeStacktrace)
+  {
     Container obj = new ContainerImpl();
     obj.putString(KEY_CODE, mCode.getCodeString());
     obj.putString(KEY_MESSAGE, mCode.getMessage());
@@ -153,11 +158,14 @@ public class ZxError extends Exception
       details.putString(detailKey, getDetail(detailKey));
     }
     obj.putContainer(KEY_DETAILS, details);
-    obj.putListContainer(KEY_STACKTRACE, buildTrace(getStackTrace()));
-    Container cause =  buildContainerFromException(getCause());
-    if (cause != null)
+    if (includeStacktrace)
     {
-      obj.putContainer(KEY_CAUSE, cause);
+    obj.putListContainer(KEY_STACKTRACE, buildTrace(getStackTrace()));
+      Container cause = buildContainerFromException(getCause());
+      if (cause != null)
+      {
+        obj.putContainer(KEY_CAUSE, cause);
+      }
     }
     return obj;
   }
