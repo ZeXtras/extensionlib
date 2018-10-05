@@ -68,6 +68,29 @@ public class ConsumerQueue<T>
       mLock.unlock();
     }
   }
+  public boolean addIfAvailable(T item) throws InterruptedException
+  {
+    mLock.lock();
+    try
+    {
+      if (mFinish)
+      {
+        throw new RuntimeException();
+      }
+
+      if (mQueue.size() >= mQueueMaxSize)
+      {
+        return false;
+      }
+      mQueue.add(item);
+      mWaitItem.signal();
+      return true;
+    }
+    finally
+    {
+      mLock.unlock();
+    }
+  }
 
   public T pop() throws InterruptedException
   {
@@ -112,6 +135,19 @@ public class ConsumerQueue<T>
     if (!checkIntegrity())
     {
       throw new RuntimeException("ConsumerQueue invalid state");
+    }
+  }
+
+  public boolean isStopped()
+  {
+    mLock.lock();
+    try
+    {
+      return mFinish;
+    }
+    finally
+    {
+      mLock.unlock();
     }
   }
 
