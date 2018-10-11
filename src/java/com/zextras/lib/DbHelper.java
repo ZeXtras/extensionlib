@@ -302,6 +302,23 @@ public class DbHelper
   }
 
   public <T> Iterator<T> buildIterator(
+    DbConnection connection,
+    String query,
+    ParametersFactory parametersFactory,
+    final ResultSetFactory<T> resultSetFactory
+  )
+    throws SQLException
+  {
+    List<T> list = new ArrayList<T>();
+    PreparedStatement preparedStatement = connection.prepareStatement(query);
+    parametersFactory.init(preparedStatement);
+    ResultSet resultSet = preparedStatement.executeQuery();
+    setList(resultSetFactory, list, resultSet);
+
+    return list.iterator();
+  }
+
+  public <T> Iterator<T> buildIterator(
     String query,
     ParametersFactory parametersFactory,
     final ResultSetFactory<T> resultSetFactory
@@ -314,27 +331,36 @@ public class DbHelper
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       parametersFactory.init(preparedStatement);
       ResultSet resultSet = preparedStatement.executeQuery();
-      while (resultSet.next())
-      {
-        try
-        {
-          T element = resultSetFactory.create(resultSet);
-          if (element != null)
-          {
-            list.add(element);
-          }
-        }
-        catch (Exception e)
-        {
-          ZimbraLog.mailbox.error(Utils.exceptionToString(e));
-        }
-      }
+      setList(resultSetFactory, list, resultSet);
 
       return list.iterator();
     }
     finally
     {
       DbUtils.closeQuietly(connection);
+    }
+  }
+
+  private <T> void setList(
+    ResultSetFactory<T> resultSetFactory,
+    List<T> list,
+    ResultSet resultSet
+  ) throws SQLException
+  {
+    while(resultSet.next())
+    {
+      try
+      {
+        T element = resultSetFactory.create(resultSet);
+        if(element != null)
+        {
+          list.add(element);
+        }
+      }
+      catch(Exception e)
+      {
+        ZimbraLog.mailbox.error(Utils.exceptionToString(e));
+      }
     }
   }
 }
