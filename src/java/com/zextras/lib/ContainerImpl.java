@@ -47,13 +47,22 @@ public class ContainerImpl implements Container
   {
     if (mContainerMap.containsKey(key))
     {
-      return mContainerMap.get(key);
+      Object value = mContainerMap.get(key);
+      if (value == null)
+      {
+        throw new MetadataKeyNotFoundError(key);
+      }
+      return value;
     }
     throw new MetadataKeyNotFoundError(key);
   }
 
   private void put(String key, Object value)
   {
+    if (value == null)
+    {
+      throw new NullPointerException();
+    }
     mContainerMap.put(key, value);
   }
 
@@ -286,7 +295,6 @@ public class ContainerImpl implements Container
   public void putContainer(String key, Container value)
   {
     put(key, value);
-
   }
 
   @Override
