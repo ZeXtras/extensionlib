@@ -531,8 +531,6 @@ public class ContainerImpl implements Container
   @Override
   public String toString()
   {
-    return "ContainerImpl{" +
-      "mContainerMap=" + mContainerMap +
-      '}';
+    return toJsonString();
   }
 }
