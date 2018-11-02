@@ -256,21 +256,25 @@ public class DbHelper
   }
 
   public <T> Iterator<T> buildGlobalIterator(
-    String query,
-    ParametersFactory parametersFactory,
+    final String query,
+    final ParametersFactory parametersFactory,
     final ResultSetFactory<T> resultSetFactory,
     int blockSize
   ) throws SQLException
   {
-    final Connection connection = mDbHandler.getConnection();
-    final PreparedStatement preparedStatement = connection.prepareStatement(query);
-    final int i = parametersFactory.init(preparedStatement);
     return new DbPrefetchIterator<T>(
       new QueryExecutor()
       {
+        Connection connection = null;
+
         @Override
         public ResultSet executeQuery(int start, int size) throws UnableToObtainDBConnectionError, SQLException
         {
+          if( connection == null ) {
+            connection = mDbHandler.getConnection();
+          }
+          PreparedStatement preparedStatement = connection.prepareStatement(query);
+          final int i = parametersFactory.init(preparedStatement);
           preparedStatement.setInt(i, start);
           preparedStatement.setInt(i+1, size);
           return preparedStatement.executeQuery();
@@ -280,6 +284,7 @@ public class DbHelper
         public void close() throws IOException
         {
           DbUtils.closeQuietly(connection);
+          connection = null;
         }
       },
       new ResultSetParser<T>()
