@@ -238,4 +238,10 @@ public abstract class ContainerListImpl<T>  implements ContainerList<T>
     }
     return s;
   }
+
+  @Override
+  public String toString()
+  {
+    return toJsonString();
+  }
 }
