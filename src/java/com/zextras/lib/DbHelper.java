@@ -18,10 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class DbHelper
 {
@@ -117,7 +115,7 @@ public class DbHelper
 
   public interface ResultSetFactory<T>
   {
-    T create(ResultSet rs) throws Exception;
+    T create(ResultSet rs, DbConnection connection) throws Exception;
   }
 
   public interface ParametersFactory
@@ -194,7 +192,7 @@ public class DbHelper
       {
         try
         {
-          rsFactory.create(rs);
+          rsFactory.create(rs, connection);
         }
         catch (Exception e)
         {
@@ -262,18 +260,19 @@ public class DbHelper
     int blockSize
   ) throws SQLException
   {
+    final DbConnection[] connection = {null};
+
     return new DbPrefetchIterator<T>(
       new QueryExecutor()
       {
-        Connection connection = null;
 
         @Override
         public ResultSet executeQuery(int start, int size) throws UnableToObtainDBConnectionError, SQLException
         {
-          if( connection == null ) {
-            connection = mDbHandler.getConnection();
+          if( connection[0] == null ) {
+            connection[0] = beginConnection();
           }
-          PreparedStatement preparedStatement = connection.prepareStatement(query);
+          PreparedStatement preparedStatement = connection[0].prepareStatement(query);
           final int i = parametersFactory.init(preparedStatement);
           preparedStatement.setInt(i, start);
           preparedStatement.setInt(i+1, size);
@@ -283,8 +282,8 @@ public class DbHelper
         @Override
         public void close() throws IOException
         {
-          DbUtils.closeQuietly(connection);
-          connection = null;
+          IOUtils.closeQuietly(connection[0]);
+          connection[0] = null;
         }
       },
       new ResultSetParser<T>()
@@ -294,7 +293,7 @@ public class DbHelper
         {
           try
           {
-            return resultSetFactory.create(resultSet);
+            return resultSetFactory.create(resultSet, connection[0]);
           }
           catch (Exception e)
           {
@@ -318,7 +317,7 @@ public class DbHelper
     PreparedStatement preparedStatement = connection.prepareStatement(query);
     parametersFactory.init(preparedStatement);
     ResultSet resultSet = preparedStatement.executeQuery();
-    setList(resultSetFactory, list, resultSet);
+    setList(resultSetFactory, list, resultSet, connection);
 
     return list.iterator();
   }
@@ -329,34 +328,36 @@ public class DbHelper
     final ResultSetFactory<T> resultSetFactory
   ) throws SQLException
   {
-    final Connection connection = mDbHandler.getConnection();
+    final DbConnection connection = beginConnection();
     List<T> list = new ArrayList<T>();
     try
     {
       PreparedStatement preparedStatement = connection.prepareStatement(query);
       parametersFactory.init(preparedStatement);
       ResultSet resultSet = preparedStatement.executeQuery();
-      setList(resultSetFactory, list, resultSet);
+      setList(resultSetFactory, list, resultSet, connection);
 
       return list.iterator();
     }
     finally
     {
-      DbUtils.closeQuietly(connection);
+      IOUtils.closeQuietly(connection);
     }
   }
 
   private <T> void setList(
     ResultSetFactory<T> resultSetFactory,
     List<T> list,
-    ResultSet resultSet
-  ) throws SQLException
+    ResultSet resultSet,
+    DbConnection connection
+  )
+    throws SQLException
   {
     while(resultSet.next())
     {
       try
       {
-        T element = resultSetFactory.create(resultSet);
+        T element = resultSetFactory.create(resultSet, connection);
         if(element != null)
         {
           list.add(element);
