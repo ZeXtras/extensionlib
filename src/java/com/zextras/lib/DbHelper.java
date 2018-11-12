@@ -261,6 +261,7 @@ public class DbHelper
   ) throws SQLException
   {
     final DbConnection[] connection = {null};
+    final PreparedStatement[] preparedStatement = {null};
 
     return new DbPrefetchIterator<T>(
       new QueryExecutor()
@@ -271,19 +272,21 @@ public class DbHelper
         {
           if( connection[0] == null ) {
             connection[0] = beginConnection();
+            preparedStatement[0] = connection[0].prepareStatement(query);
           }
-          PreparedStatement preparedStatement = connection[0].prepareStatement(query);
-          final int i = parametersFactory.init(preparedStatement);
-          preparedStatement.setInt(i, start);
-          preparedStatement.setInt(i+1, size);
-          return preparedStatement.executeQuery();
+          final int i = parametersFactory.init(preparedStatement[0]);
+          preparedStatement[0].setInt(i, start);
+          preparedStatement[0].setInt(i+1, size);
+          return preparedStatement[0].executeQuery();
         }
 
         @Override
         public void close() throws IOException
         {
+          DbUtils.closeQuietly(preparedStatement[0]);
           IOUtils.closeQuietly(connection[0]);
           connection[0] = null;
+          preparedStatement[0] = null;
         }
       },
       new ResultSetParser<T>()
@@ -315,9 +318,16 @@ public class DbHelper
   {
     List<T> list = new ArrayList<T>();
     PreparedStatement preparedStatement = connection.prepareStatement(query);
-    parametersFactory.init(preparedStatement);
-    ResultSet resultSet = preparedStatement.executeQuery();
-    setList(resultSetFactory, list, resultSet, connection);
+    try
+    {
+      parametersFactory.init(preparedStatement);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      setList(resultSetFactory, list, resultSet, connection);
+    }
+    finally
+    {
+      DbUtils.closeQuietly(preparedStatement);
+    }
 
     return list.iterator();
   }
@@ -329,10 +339,11 @@ public class DbHelper
   ) throws SQLException
   {
     final DbConnection connection = beginConnection();
+    PreparedStatement preparedStatement = null;
     List<T> list = new ArrayList<T>();
     try
     {
-      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      preparedStatement = connection.prepareStatement(query);
       parametersFactory.init(preparedStatement);
       ResultSet resultSet = preparedStatement.executeQuery();
       setList(resultSetFactory, list, resultSet, connection);
@@ -341,6 +352,7 @@ public class DbHelper
     }
     finally
     {
+      DbUtils.closeQuietly(preparedStatement);
       IOUtils.closeQuietly(connection);
     }
   }
