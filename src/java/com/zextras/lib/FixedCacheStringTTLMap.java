@@ -8,4 +8,10 @@ public class FixedCacheStringTTLMap<R> extends FixedCacheTTLMap<String, R>
   {
     super(size, getter, clock, ttl, cacheMisses);
   }
+
+  @Override
+  public void put(String key,R value)
+  {
+    super.put(key.intern(),value);
+  }
 }
