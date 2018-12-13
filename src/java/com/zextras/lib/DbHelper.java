@@ -47,7 +47,22 @@ public class DbHelper
 
     public void close()
     {
-      DbUtils.closeQuietly(mConnection);
+      try
+      {
+
+        if(mConnection != null && !mConnection.isClosed() && mOldAutoCommitState != null)
+        {
+          mConnection.setAutoCommit(mOldAutoCommitState);
+        }
+      }
+      catch(SQLException e)
+      {
+        throw new RuntimeException(e);
+      }
+      finally
+      {
+        DbUtils.closeQuietly(mConnection);
+      }
     }
 
     public void beginTransaction() throws SQLException
@@ -167,6 +182,11 @@ public class DbHelper
     {
       IOUtils.closeQuietly(connection);
     }
+  }
+
+  public void query(DbConnection connection, String query, ParametersFactory parametersFactory, ResultSetFactory resultSetFactory) throws SQLException
+  {
+    executeQuery(connection, query, parametersFactory, resultSetFactory);
   }
 
   public void query(DbConnection connection, String query,ParametersFactory parametersFactory) throws SQLException
