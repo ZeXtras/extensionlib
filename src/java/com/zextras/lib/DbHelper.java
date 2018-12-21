@@ -23,6 +23,9 @@ import java.util.List;
 
 public class DbHelper
 {
+  public static final String sDISABLE_FOREIGN_KEYS = "SET DATABASE REFERENTIAL INTEGRITY FALSE";
+  public static final String sENABLE_FOREIGN_KEYS  = "SET DATABASE REFERENTIAL INTEGRITY TRUE";
+
   private final DbHandler mDbHandler;
 
   public DbHelper(DbHandler dbHandler)
@@ -79,7 +82,7 @@ public class DbHelper
       }
     }
 
-    public void commitAndClose() throws SQLException
+    public void commit() throws SQLException
     {
       if (mOldAutoCommitState == null)
       {
@@ -92,11 +95,22 @@ public class DbHelper
       finally
       {
         mConnection.setAutoCommit(mOldAutoCommitState);
+      }
+    }
+
+    public void commitAndClose() throws SQLException
+    {
+      try
+      {
+        commit();
+      }
+      finally
+      {
         DbUtils.closeQuietly(mConnection);
       }
     }
 
-    public void rollbackAndClose() throws SQLException
+    public void rollback() throws SQLException
     {
       if (mOldAutoCommitState == null)
       {
@@ -109,6 +123,17 @@ public class DbHelper
       finally
       {
         mConnection.setAutoCommit(mOldAutoCommitState);
+      }
+    }
+
+    public void rollbackAndClose() throws SQLException
+    {
+      try
+      {
+        rollback();
+      }
+      finally
+      {
         DbUtils.closeQuietly(mConnection);
       }
     }
@@ -119,7 +144,7 @@ public class DbHelper
     }
   }
 
-  static class NoParameters implements ParametersFactory
+  public static class NoParameters implements ParametersFactory
   {
     @Override
     public int init(PreparedStatement preparedStatement) throws SQLException
