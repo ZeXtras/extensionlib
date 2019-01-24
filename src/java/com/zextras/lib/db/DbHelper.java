@@ -1,7 +1,6 @@
-package com.zextras.lib;
+package com.zextras.lib.db;
 
 import com.zextras.lib.Error.UnableToObtainDBConnectionError;
-import com.zextras.lib.db.DbHandler;
 import com.zextras.lib.log.ChatLog;
 import com.zextras.lib.sql.DbPrefetchIterator;
 import com.zextras.lib.sql.QueryExecutor;
@@ -155,7 +154,7 @@ public class DbHelper
 
   public interface ResultSetFactory<T>
   {
-    T create(ResultSet rs, DbConnection connection) throws Exception;
+    T create(ResultSetHelper rs, DbConnection connection) throws Exception;
   }
 
   public interface ParametersFactory
@@ -227,12 +226,12 @@ public class DbHelper
   public void executeQuery(DbConnection connection, String query,ParametersFactory parametersFactory,ResultSetFactory rsFactory) throws SQLException
   {
     PreparedStatement statement = null;
-    ResultSet rs = null;
+    ResultSetHelper rs = null;
     try
     {
       statement = connection.prepareStatement(query);
       parametersFactory.init(statement);
-      rs = statement.executeQuery();
+      rs = new ResultSetHelper(statement.executeQuery());
       while (rs.next())
       {
         try
@@ -247,7 +246,7 @@ public class DbHelper
     }
     finally
     {
-      DbUtils.closeQuietly(rs);
+      IOUtils.closeQuietly(rs);
       DbUtils.closeQuietly(statement);
     }
   }
@@ -341,7 +340,7 @@ public class DbHelper
         {
           try
           {
-            return resultSetFactory.create(resultSet, connection[0]);
+            return resultSetFactory.create(new ResultSetHelper(resultSet), connection[0]);
           }
           catch (Exception e)
           {
@@ -414,7 +413,7 @@ public class DbHelper
     {
       try
       {
-        T element = resultSetFactory.create(resultSet, connection);
+        T element = resultSetFactory.create(new ResultSetHelper(resultSet), connection);
         if(element != null)
         {
           list.add(element);

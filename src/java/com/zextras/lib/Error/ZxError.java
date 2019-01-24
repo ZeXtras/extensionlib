@@ -98,6 +98,10 @@ public class ZxError extends Exception
 
   protected ZxError setDetail(String key, String value)
   {
+    if (value == null)
+    {
+      value = "";
+    }
     mDetailsMap.put(key, value);
     return this;
   }
