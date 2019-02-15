@@ -110,7 +110,7 @@ public class ThreadSlot implements ZELogger
     }
 
     //ZELog.core.debug(this,"startActivity startActivity");
-    mThread.startActivity(this, activitySlot.getActivity(), activitySlot.getLogContext() );
+    mThread.startActivity(this, activitySlot.getActivity(), activitySlot.getLogContext(), activitySlot.getName() );
     //ZELog.core.debug(this,"startActivity end");
   }
 

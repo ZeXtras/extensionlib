@@ -100,20 +100,25 @@ public class ActivityManager implements ZELogger, Service
     LogContext logContext = CurrentLogContext.current().createChild();
     logContext.freeze();
 
-    addActivity(activity, logContext);
+    addActivity(activity, logContext,"");
   }
 
   public void addActivity(Runnable activity)
   {
-    addActivity(activity, new RootLogContext());
+    addActivity(activity, new RootLogContext(),"");
   }
 
-  public void addActivity(Runnable activity, LogContext logContext)
+  public void addActivity(Runnable activity,String name)
+  {
+    addActivity(activity, new RootLogContext(),name);
+  }
+
+  public void addActivity(Runnable activity, LogContext logContext,String name)
   {
     mLock.lock();
     try
     {
-      mActivityList.add( new ActivitySlot(activity, logContext) );
+      mActivityList.add( new ActivitySlot(activity, logContext, name) );
     }
     finally{
       mLock.unlock();

@@ -29,15 +29,22 @@ public class ActivitySlot
   }
 
   private final LogContext mLogContext;
+  private final String mName;
 
-  public ActivitySlot(Runnable activity, LogContext logContext)
+  public ActivitySlot(Runnable activity, LogContext logContext,String name)
   {
     mActivity = activity;
     mLogContext = logContext;
+    mName = name;
   }
 
   public Runnable getActivity()
   {
     return mActivity;
+  }
+
+  public String getName()
+  {
+    return mName;
   }
 }

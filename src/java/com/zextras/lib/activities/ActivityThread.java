@@ -37,6 +37,7 @@ public class ActivityThread extends Thread implements ZELogger
   private boolean    mStopped    = false;
   private final Lock      mLock      = new ReentrantLock();
   private final Condition mCondition = mLock.newCondition();
+  private String mName;
 
 
   public ActivityThread(String prefix)
@@ -52,13 +53,14 @@ public class ActivityThread extends Thread implements ZELogger
     return mPrefix + " Activity";
   }
 
-  public void startActivity(ThreadSlot threadSlot, Runnable activity, LogContext logContext)
+  public void startActivity(ThreadSlot threadSlot, Runnable activity, LogContext logContext, String name)
   {
     //ZimbraLog.mailbox.debug("startActivity");
     //ZimbraLog.mailbox.debug(Utils.currentStackTrace());
     mLock.lock();
     try
     {
+      mName = name;
       mThreadSlot = threadSlot;
       mActivity = activity;
       mLogContext = logContext;
@@ -109,6 +111,10 @@ public class ActivityThread extends Thread implements ZELogger
             currentActivity = mActivity;
             currentThreadSlot = mThreadSlot;
             CurrentLogContext.setCurrent(mLogContext);
+            if (!mName.isEmpty())
+            {
+              setName(mName);
+            }
 
             mActivity = null;
             mThreadSlot = null;
