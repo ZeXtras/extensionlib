@@ -27,7 +27,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Singleton
-public abstract class MariaDbHandler
+public abstract class MariaDbHandler implements DbHandler
 {
   private final ZimbraConnectionProvider mZimbraConnectionProvider;
 
