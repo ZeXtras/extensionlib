@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.zextras.lib.log.LogContext;
 import com.zextras.lib.log.SeverityLevel;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 abstract public class ZELogWriter implements Comparable<ZELogWriter>
 {
@@ -74,7 +74,7 @@ abstract public class ZELogWriter implements Comparable<ZELogWriter>
   public abstract String getName();
   public abstract String getDescription();
 
-  public int compareTo(@NotNull ZELogWriter writer) {
+  public int compareTo(@Nonnull ZELogWriter writer) {
     return ((Integer)getPriority()).compareTo( writer.getPriority() );
   }
 

@@ -17,7 +17,7 @@
 
 package com.zextras.lib;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.List;

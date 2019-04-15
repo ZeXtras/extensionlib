@@ -18,8 +18,8 @@
 package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.openzal.zal.log.ZimbraLog;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class LogContextImpl implements LogContext
   private       Boolean       mHasDedicated;
   private       String        mLoggerName;
 
-  public LogContextImpl(@NotNull LogContext parent)
+  public LogContextImpl(@Nonnull LogContext parent)
   {
     mParent = parent;
     mContext = new LinkedHashMap<String, String>();
@@ -65,56 +65,56 @@ public class LogContextImpl implements LogContext
     return mContext.get(key);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getAccountName()
   {
     return get("account");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getAccountId()
   {
     return get("accountId");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getDeviceId()
   {
     return get("id");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getDeviceModel()
   {
     return get("model");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationId()
   {
     return get("operationId");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationName()
   {
     return get("operation");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationModuleName()
   {
     return get("module");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setAccountName(String account)
   {
@@ -126,7 +126,7 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setAccount(Account account)
   {
@@ -139,21 +139,21 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDeviceId(String deviceId)
   {
     return set("id", emptyWhenNull(deviceId));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDeviceModel(String deviceModel)
   {
     return set("model", emptyWhenNull(deviceModel));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationId(
     @Nullable String operationId
@@ -167,7 +167,7 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationName(
     @Nullable String operationName
@@ -181,7 +181,7 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationModuleName(
     @Nullable String moduleName
@@ -195,7 +195,7 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDedicatedLog(boolean hasDedicated)
   {
@@ -204,7 +204,7 @@ public class LogContextImpl implements LogContext
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setLoggerName(String name)
   {
@@ -223,7 +223,7 @@ public class LogContextImpl implements LogContext
     return mHasDedicated;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getLoggerName()
   {
@@ -234,7 +234,7 @@ public class LogContextImpl implements LogContext
     return mLoggerName;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public SeverityLevel getOperationSeverityLevel()
   {
@@ -245,7 +245,7 @@ public class LogContextImpl implements LogContext
     return mSeverityLevel;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationSeverityLevel(SeverityLevel severityLevel)
   {
@@ -289,7 +289,7 @@ public class LogContextImpl implements LogContext
     mParent.populateZimbraLogContext();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext createChild()
   {
@@ -300,7 +300,7 @@ public class LogContextImpl implements LogContext
     return new LogContextImpl(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext getParent()
   {
@@ -319,56 +319,56 @@ public class LogContextImpl implements LogContext
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOriginalIp()
   {
     return get("oip");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getEASVersion()
   {
     return get("eas");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getUserAddress()
   {
     return get("user");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOriginalIp(String originalIp)
   {
     return set("oip", originalIp);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setEASVersion(String easVersion)
   {
     return set("eas", easVersion);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setRequestId(int id)
   {
     return set("rid", String.valueOf(id));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setUserAddress(String userAddress)
   {
     return set("user", userAddress);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setProxyIp(String sourceIpAddress)
   {
@@ -381,7 +381,7 @@ public class LogContextImpl implements LogContext
     return get("rid");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getProxyIp()
   {
@@ -389,7 +389,7 @@ public class LogContextImpl implements LogContext
   }
 
   @Override
-  public LogContext set(@NotNull String key, String value)
+  public LogContext set(@Nonnull String key, String value)
   {
     canSetCheck();
     mContext.put(key, value == null ? "" : value);
