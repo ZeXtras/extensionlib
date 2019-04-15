@@ -18,60 +18,60 @@
 package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public interface LogContext
 {
-  @NotNull String get(String key);
-  @NotNull String getAccountName();
-  @NotNull String getAccountId();
-  @NotNull String getDeviceId();
-  @NotNull String getDeviceModel();
-  @NotNull String getOperationId();
-  @NotNull String getOperationName();
-  @NotNull String getOperationModuleName();
-  @NotNull String getRequestId();
-  @NotNull String getProxyIp();
+  @Nonnull String get(String key);
+  @Nonnull String getAccountName();
+  @Nonnull String getAccountId();
+  @Nonnull String getDeviceId();
+  @Nonnull String getDeviceModel();
+  @Nonnull String getOperationId();
+  @Nonnull String getOperationName();
+  @Nonnull String getOperationModuleName();
+  @Nonnull String getRequestId();
+  @Nonnull String getProxyIp();
 
 
   LogContext set(String key, String value);
-  @NotNull LogContext setAccountName(String mail);
-  @NotNull LogContext setAccount(Account account);
-  @NotNull LogContext setDeviceId(String deviceId);
-  @NotNull LogContext setDeviceModel(String deviceModel);
-  @NotNull LogContext setOperationId(String operationId);
-  @NotNull LogContext setOperationName(String operationName);
-  @NotNull LogContext setOperationModuleName(String moduleName);
-  @NotNull LogContext setOperationSeverityLevel(SeverityLevel severityLevel);
+  @Nonnull LogContext setAccountName(String mail);
+  @Nonnull LogContext setAccount(Account account);
+  @Nonnull LogContext setDeviceId(String deviceId);
+  @Nonnull LogContext setDeviceModel(String deviceModel);
+  @Nonnull LogContext setOperationId(String operationId);
+  @Nonnull LogContext setOperationName(String operationName);
+  @Nonnull LogContext setOperationModuleName(String moduleName);
+  @Nonnull LogContext setOperationSeverityLevel(SeverityLevel severityLevel);
 
-  @NotNull LogContext setDedicatedLog(boolean hasDedicated);
-  @NotNull LogContext setLoggerName(String name);
+  @Nonnull LogContext setDedicatedLog(boolean hasDedicated);
+  @Nonnull LogContext setLoggerName(String name);
 
   boolean hasDedicatedLog();
-  @NotNull String getLoggerName();
-  @NotNull SeverityLevel getOperationSeverityLevel();
+  @Nonnull String getLoggerName();
+  @Nonnull SeverityLevel getOperationSeverityLevel();
   void freeze();
-  @NotNull LogContext createChild();
+  @Nonnull LogContext createChild();
 
-  @NotNull LogContext getParent();
+  @Nonnull LogContext getParent();
 
   boolean isFrozen();
   boolean isRootContext();
 
-  @NotNull String getOriginalIp();
-  @NotNull String getEASVersion();
+  @Nonnull String getOriginalIp();
+  @Nonnull String getEASVersion();
 
-  @NotNull
+  @Nonnull
   String getUserAddress();
 
-  @NotNull LogContext setOriginalIp(String originalIp);
-  @NotNull LogContext setEASVersion(String easVersion);
+  @Nonnull LogContext setOriginalIp(String originalIp);
+  @Nonnull LogContext setEASVersion(String easVersion);
 
-  @NotNull LogContext setRequestId(int id);
+  @Nonnull LogContext setRequestId(int id);
 
-  @NotNull LogContext setUserAddress(String userAddress);
+  @Nonnull LogContext setUserAddress(String userAddress);
 
-  @NotNull LogContext setProxyIp(String sourceIpAddress);
+  @Nonnull LogContext setProxyIp(String sourceIpAddress);
 
   void populateZimbraLogContext();
 
