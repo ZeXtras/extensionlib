@@ -229,7 +229,7 @@ public class DbHelper
     ResultSetHelper rs = null;
     try
     {
-      statement = connection.prepareStatement(query);
+      statement = connection.prepareStatement(mDbHandler.cleanSql(query));
       parametersFactory.init(statement);
       rs = new ResultSetHelper(statement.executeQuery());
       while (rs.next())
@@ -286,7 +286,7 @@ public class DbHelper
     ResultSet rs = null;
     try
     {
-      statement = connection.prepareStatement(query);
+      statement = connection.prepareStatement(mDbHandler.cleanSql(query));
       parametersFactory.init(statement);
       return statement.executeUpdate();
     }
@@ -316,7 +316,7 @@ public class DbHelper
         {
           if( connection[0] == null ) {
             connection[0] = beginConnection();
-            preparedStatement[0] = connection[0].prepareStatement(query);
+            preparedStatement[0] = connection[0].prepareStatement(mDbHandler.cleanSql(query));
           }
           final int i = parametersFactory.init(preparedStatement[0]);
           preparedStatement[0].setInt(i, start);
@@ -361,7 +361,7 @@ public class DbHelper
     throws SQLException
   {
     List<T> list = new ArrayList<T>();
-    PreparedStatement preparedStatement = connection.prepareStatement(query);
+    PreparedStatement preparedStatement = connection.prepareStatement(mDbHandler.cleanSql(query));
     try
     {
       parametersFactory.init(preparedStatement);
@@ -387,7 +387,7 @@ public class DbHelper
     List<T> list = new ArrayList<T>();
     try
     {
-      preparedStatement = connection.prepareStatement(query);
+      preparedStatement = connection.prepareStatement(mDbHandler.cleanSql(query));
       parametersFactory.init(preparedStatement);
       ResultSet resultSet = preparedStatement.executeQuery();
       setList(resultSetFactory, list, resultSet, connection);
