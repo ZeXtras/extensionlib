@@ -19,7 +19,7 @@ package com.zextras.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -98,14 +98,14 @@ public abstract class ContainerListImpl<T>  implements ContainerList<T>
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Object[] toArray()
   {
     return mList.toArray();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public <T> T[] toArray(T[] a)
   {
@@ -196,21 +196,21 @@ public abstract class ContainerListImpl<T>  implements ContainerList<T>
     return mList.lastIndexOf(o);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ListIterator<T> listIterator()
   {
     return mList.listIterator();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ListIterator<T> listIterator(int index)
   {
     return mList.listIterator(index);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<T> subList(int fromIndex, int toIndex)
   {

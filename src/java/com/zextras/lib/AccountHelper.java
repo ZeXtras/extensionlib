@@ -20,7 +20,7 @@ package com.zextras.lib;
 import org.openzal.zal.Account;
 import org.openzal.zal.Provisioning;
 import org.openzal.zal.exceptions.ZimbraException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public class AccountHelper
 {
@@ -29,8 +29,8 @@ public class AccountHelper
   private AccountData mAccountData;
 
   public AccountHelper(
-    @NotNull String email,
-    @NotNull Provisioning provisioning
+    @Nonnull String email,
+    @Nonnull Provisioning provisioning
   )
   {
     try

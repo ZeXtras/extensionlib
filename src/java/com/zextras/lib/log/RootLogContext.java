@@ -18,61 +18,61 @@
 package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.openzal.zal.log.ZimbraLog;
 
 public class RootLogContext implements LogContext
 {
-  @NotNull
+  @Nonnull
   @Override
   public String get(String key)
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getAccountName()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getAccountId()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getDeviceId()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getDeviceModel()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationId()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationName()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOperationModuleName()
   {
@@ -85,7 +85,7 @@ public class RootLogContext implements LogContext
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getProxyIp()
   {
@@ -93,75 +93,75 @@ public class RootLogContext implements LogContext
   }
 
   @Override
-  public LogContext set(@NotNull String key, @NotNull String value)
+  public LogContext set(@Nonnull String key, @Nonnull String value)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setAccountName(String account)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setAccount(Account account)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDeviceId(String deviceId)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDeviceModel(String deviceModel)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationId(String operationId)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationName(String operationName)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationModuleName(String moduleName)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOperationSeverityLevel(SeverityLevel severityLevel)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setDedicatedLog(boolean hasDedicated)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setLoggerName(String name)
   {
@@ -174,14 +174,14 @@ public class RootLogContext implements LogContext
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getLoggerName()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public SeverityLevel getOperationSeverityLevel()
   {
@@ -194,14 +194,14 @@ public class RootLogContext implements LogContext
     throw new RuntimeException("You cannot freeze an already frozen LogContext.");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext createChild()
   {
     return new LogContextImpl(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext getParent()
   {
@@ -220,56 +220,56 @@ public class RootLogContext implements LogContext
     return true;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getOriginalIp()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getEASVersion()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getUserAddress()
   {
     return "";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setOriginalIp(String originalIp)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setEASVersion(String easVersion)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setRequestId(int id)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setUserAddress(String userAddress)
   {
     throw createCantSetException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LogContext setProxyIp(String sourceIpAddress)
   {
