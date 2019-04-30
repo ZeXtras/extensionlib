@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.zextras.lib.Error.MetadataKeyInvalidTypeFoundError;
 import com.zextras.lib.Error.MetadataKeyNotFoundError;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -106,7 +106,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public String optString(String key, @NotNull String defaultValue)
+  public String optString(String key, @Nonnull String defaultValue)
   {
     if( mContainerMap.containsKey(key) )
     {
@@ -257,7 +257,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public Container optContainer(String key, @NotNull Container defalutValue)
+  public Container optContainer(String key, @Nonnull Container defalutValue)
   {
     if( mContainerMap.containsKey(key) )
     {
@@ -317,7 +317,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public Iterable<String> optListString(String key, @NotNull Iterable<String> defaultValue)
+  public Iterable<String> optListString(String key, @Nonnull Iterable<String> defaultValue)
   {
     if( mContainerMap.containsKey(key) )
     {
@@ -362,7 +362,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public Iterable<Container> optListContainer(String key, @NotNull Iterable<Container> defaultValue)
+  public Iterable<Container> optListContainer(String key, @Nonnull Iterable<Container> defaultValue)
   {
     if( mContainerMap.containsKey(key) )
     {
@@ -407,7 +407,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public Iterable<Long> optListLong(String key, @NotNull Iterable<Long> defaultValue)
+  public Iterable<Long> optListLong(String key, @Nonnull Iterable<Long> defaultValue)
   {
     if( mContainerMap.containsKey(key) )
     {
@@ -465,7 +465,7 @@ public class ContainerImpl implements Container
   }
 
   @Override
-  public Iterable<Boolean> optListBoolean(String key, @NotNull Iterable<Boolean> defaultValue)
+  public Iterable<Boolean> optListBoolean(String key, @Nonnull Iterable<Boolean> defaultValue)
   {
     if( mContainerMap.containsKey(key) )
     {

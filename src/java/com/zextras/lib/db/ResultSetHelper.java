@@ -1,7 +1,7 @@
 package com.zextras.lib.db;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public class ResultSetHelper implements Closeable
   private final ResultSetMetaData mRsmd;
   private final ResultSet mRs;
 
-  public ResultSetHelper(@NotNull
+  public ResultSetHelper(@Nonnull
     ResultSet rs)
     throws SQLException
   {
@@ -170,9 +170,9 @@ public class ResultSetHelper implements Closeable
     return value;
   }
 
-  public String getNotNullString(String s) throws SQLException
+  public String getNonnullString(String s) throws SQLException
   {
-    String value = getNotNull(s, mRs.getString(s));
+    String value = getNonnull(s, mRs.getString(s));
     if (value == null)
     {
       return null;
@@ -180,69 +180,69 @@ public class ResultSetHelper implements Closeable
     return value.trim();
   }
 
-  public Boolean getNotNullBoolean(String s) throws SQLException
+  public Boolean getNonnullBoolean(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getBoolean(s));
+    return getNonnull(s, mRs.getBoolean(s));
   }
 
-  public Byte getNotNullByte(String s) throws SQLException
+  public Byte getNonnullByte(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getByte(s));
+    return getNonnull(s, mRs.getByte(s));
   }
 
-  public Short getNotNullShort(String s) throws SQLException
+  public Short getNonnullShort(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getShort(s));
+    return getNonnull(s, mRs.getShort(s));
   }
 
-  public Integer getNotNullInt(String s) throws SQLException
+  public Integer getNonnullInt(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getInt(s));
+    return getNonnull(s, mRs.getInt(s));
   }
 
-  public Long getNotNullLong(String s) throws SQLException
+  public Long getNonnullLong(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getLong(s));
+    return getNonnull(s, mRs.getLong(s));
   }
 
-  public Float getNotNullFloat(String s) throws SQLException
+  public Float getNonnullFloat(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getFloat(s));
+    return getNonnull(s, mRs.getFloat(s));
   }
 
-  public Double getNotNullDouble(String s) throws SQLException
+  public Double getNonnullDouble(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getDouble(s));
+    return getNonnull(s, mRs.getDouble(s));
   }
 
-  public byte[] getNotNullBytes(String s) throws SQLException
+  public byte[] getNonnullBytes(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getBytes(s));
+    return getNonnull(s, mRs.getBytes(s));
   }
 
-  public Date getNotNullDate(String s) throws SQLException
+  public Date getNonnullDate(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getDate(s));
+    return getNonnull(s, mRs.getDate(s));
   }
 
-  public Time getNotNullTime(String s) throws SQLException
+  public Time getNonnullTime(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getTime(s));
+    return getNonnull(s, mRs.getTime(s));
   }
 
-  public Timestamp getNotNullTimestamp(String s) throws SQLException
+  public Timestamp getNonnullTimestamp(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getTimestamp(s));
+    return getNonnull(s, mRs.getTimestamp(s));
   }
 
-  public InputStream getNotNullAsciiStream(String s) throws SQLException
+  public InputStream getNonnullAsciiStream(String s) throws SQLException
   {
-    return getNotNull(s, mRs.getAsciiStream(s));
+    return getNonnull(s, mRs.getAsciiStream(s));
   }
 
-  public InputStream getNotNullBinaryStream(String s) throws SQLException
+  public InputStream getNonnullBinaryStream(String s) throws SQLException
   {
-    return getNotNull(s, get(mRs.getBinaryStream(s)));
+    return getNonnull(s, get(mRs.getBinaryStream(s)));
   }
 
   public int getColumnType(String s) throws SQLException
@@ -250,7 +250,7 @@ public class ResultSetHelper implements Closeable
     return mRsmd.getColumnType(mRs.findColumn(s));
   }
 
-  private <T> T getNotNull(String columnName, T value) throws SQLException
+  private <T> T getNonnull(String columnName, T value) throws SQLException
   {
     if (mRs.wasNull())
     {

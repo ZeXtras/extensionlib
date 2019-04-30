@@ -18,7 +18,7 @@
 package com.zextras.lib.log;
 
 import org.openzal.zal.Account;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.openzal.zal.log.ZimbraLog;
 
 public abstract class CurrentLogContext
@@ -50,7 +50,7 @@ public abstract class CurrentLogContext
     return current().end();
   }
 
-  public static LogContext setCurrent( @NotNull LogContext logContext)
+  public static LogContext setCurrent( @Nonnull LogContext logContext)
   {
     if (logContext == null) {
       throw new NullPointerException();
@@ -97,70 +97,70 @@ public abstract class CurrentLogContext
       return mLogContext;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String get(String key)
     {
       return mLogContext.get(key);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getAccountName()
     {
       return mLogContext.getAccountName();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getAccountId()
     {
       return mLogContext.getAccountId();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getDeviceId()
     {
       return mLogContext.getDeviceId();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getDeviceModel()
     {
       return mLogContext.getDeviceModel();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getOperationId()
     {
       return mLogContext.getOperationId();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getOperationName()
     {
       return mLogContext.getOperationName();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getOperationModuleName()
     {
       return mLogContext.getOperationModuleName();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getRequestId()
     {
       return mLogContext.getRequestId();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getProxyIp()
     {
@@ -168,75 +168,75 @@ public abstract class CurrentLogContext
     }
 
     @Override
-    public LogContext set(@NotNull String key, @NotNull String value)
+    public LogContext set(@Nonnull String key, @Nonnull String value)
     {
       return mLogContext.set(key, value);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setAccountName(String account)
     {
       return mLogContext.setAccountName(account);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setAccount(Account account)
     {
       return mLogContext.setAccount(account);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setDeviceId(String deviceId)
     {
       return mLogContext.setDeviceId(deviceId);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setDeviceModel(String deviceModel)
     {
       return mLogContext.setDeviceModel(deviceModel);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setOperationId(String operationId)
     {
       return mLogContext.setOperationId(operationId);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setOperationName(String operationName)
     {
       return mLogContext.setOperationName(operationName);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setOperationModuleName(String moduleName)
     {
       return mLogContext.setOperationModuleName(moduleName);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setOperationSeverityLevel(SeverityLevel severityLevel)
     {
       return mLogContext.setOperationSeverityLevel(severityLevel);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setDedicatedLog(boolean hasDedicated)
     {
       return mLogContext.setDedicatedLog(hasDedicated);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setLoggerName(String name)
     {
@@ -249,14 +249,14 @@ public abstract class CurrentLogContext
       return mLogContext.hasDedicatedLog();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getLoggerName()
     {
       return mLogContext.getLoggerName();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public SeverityLevel getOperationSeverityLevel()
     {
@@ -269,14 +269,14 @@ public abstract class CurrentLogContext
       mLogContext.freeze();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext createChild()
     {
       return mLogContext.createChild();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext getParent()
     {
@@ -295,56 +295,56 @@ public abstract class CurrentLogContext
       return mLogContext.isRootContext();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getOriginalIp()
     {
       return mLogContext.getOriginalIp();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getEASVersion()
     {
       return mLogContext.getEASVersion();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getUserAddress()
     {
       return mLogContext.getUserAddress();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setOriginalIp(String originalIp)
     {
       return mLogContext.setOriginalIp(originalIp);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setEASVersion(String easVersion)
     {
       return mLogContext.setEASVersion(easVersion);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setRequestId(int id)
     {
       return mLogContext.setRequestId(id);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setUserAddress(String userAddress)
     {
       return null;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public LogContext setProxyIp(String sourceIpAddress)
     {

@@ -1,6 +1,6 @@
 package com.zextras.lib;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.openzal.zal.lib.Clock;
 
 import java.util.PriorityQueue;
@@ -49,7 +49,7 @@ public class FixedCacheTTLMap<T extends Comparable, R> extends FixedCacheMap<T, 
       mData = data;
     }
 
-    public int compareTo(@NotNull Data<K> o)
+    public int compareTo(@Nonnull Data<K> o)
     {
       return Long.compare(mTime,o.mTime);
     }
