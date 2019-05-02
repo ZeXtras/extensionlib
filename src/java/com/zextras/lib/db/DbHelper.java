@@ -319,8 +319,8 @@ public class DbHelper
             preparedStatement[0] = connection[0].prepareStatement(query);
           }
           final int i = parametersFactory.init(preparedStatement[0]);
-          preparedStatement[0].setInt(i, start);
-          preparedStatement[0].setInt(i+1, size);
+          preparedStatement[0].setInt(i, size);
+          preparedStatement[0].setInt(i+1, start);
           return preparedStatement[0].executeQuery();
         }
 
