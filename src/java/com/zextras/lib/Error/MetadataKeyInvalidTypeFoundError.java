@@ -43,8 +43,8 @@ public class MetadataKeyInvalidTypeFoundError extends RuntimeException
     }
   }
 
-  public MetadataKeyInvalidTypeFoundError(String key, ValueType type)
+  public MetadataKeyInvalidTypeFoundError(String key, ValueType type, Object value)
   {
-    super(key + KEY_INVALID_TYPE_FOUND + type.getValueType());
+    super(key + KEY_INVALID_TYPE_FOUND + type.getValueType() + " value[" + value.getClass().getSimpleName() + "] : " + value.toString());
   }
 }

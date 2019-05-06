@@ -24,7 +24,13 @@ import com.zextras.lib.Error.MetadataKeyInvalidTypeFoundError;
 import com.zextras.lib.Error.MetadataKeyNotFoundError;
 import javax.annotation.Nonnull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ContainerImpl implements Container
 {
@@ -100,7 +106,7 @@ public class ContainerImpl implements Container
       }
       catch (Exception e)
       {
-        throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.STRING);
+        throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.STRING, value);
       }
     }
   }
@@ -143,7 +149,7 @@ public class ContainerImpl implements Container
         return true;
       }
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.BOOLEAN);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.BOOLEAN, value);
   }
 
   @Override
@@ -185,7 +191,7 @@ public class ContainerImpl implements Container
     {
       return Long.valueOf(String.valueOf(value));
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.LONG);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.LONG, value);
   }
 
   @Override
@@ -229,7 +235,7 @@ public class ContainerImpl implements Container
       }
       catch (Exception e) {}
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.INT);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.INT, value);
   }
 
   @Override
@@ -253,7 +259,7 @@ public class ContainerImpl implements Container
     {
       return (Container) value;
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.CONTAINER);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.CONTAINER, value);
   }
 
   @Override
@@ -313,7 +319,7 @@ public class ContainerImpl implements Container
     {
       return (ContainerList<String>) value;
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.STRING);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.STRING, value);
   }
 
   @Override
@@ -358,7 +364,7 @@ public class ContainerImpl implements Container
     {
       return new ContainerListContainer(Collections.<Container>emptyList());
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.CONTAINER);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.CONTAINER, value);
   }
 
   @Override
@@ -403,7 +409,7 @@ public class ContainerImpl implements Container
     {
       return new ContainerListLong(Collections.<Long>emptyList());
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.LONG);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.LONG, value);
   }
 
   @Override
@@ -461,7 +467,7 @@ public class ContainerImpl implements Container
     {
       return new ContainerListBoolean(Collections.<Boolean>emptyList());
     }
-    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.BOOLEAN);
+    throw new MetadataKeyInvalidTypeFoundError(key, MetadataKeyInvalidTypeFoundError.ValueType.BOOLEAN, value);
   }
 
   @Override
