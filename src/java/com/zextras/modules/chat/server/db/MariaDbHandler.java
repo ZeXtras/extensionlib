@@ -54,4 +54,10 @@ public abstract class MariaDbHandler implements DbHandler
 
   public void stop()
   {}
+
+  @Override
+  public String getClusterSchemaName()
+  {
+    return "cluster";
+  }
 }
