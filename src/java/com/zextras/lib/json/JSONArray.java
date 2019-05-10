@@ -17,6 +17,7 @@
 
 package com.zextras.lib.json;
 
+import java.sql.Blob;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -294,6 +295,28 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
       return o.toString();
     }
     return null;
+  }
+
+  public byte[] getBytes(int index) throws JSONException
+  {
+    Object o = this.get( index );
+    try
+    {
+      if( o instanceof byte[] )
+      {
+        return (byte[]) o;
+      }
+      else
+      {
+        return ((String)o).getBytes();
+      }
+    }
+    catch( Exception ex )
+    {
+      throw new JSONException("[JSONArray] Element "
+        + index
+        + " is not a byte array");
+    }
   }
 
   public JSONArray getJSONArray( int index )

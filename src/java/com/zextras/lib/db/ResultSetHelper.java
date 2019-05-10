@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import java.io.Closeable;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Types;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -161,6 +162,12 @@ public class ResultSetHelper implements Closeable
   }
 
   @Nullable
+  public Blob getBlob(String s) throws SQLException
+  {
+    return get(mRs.getBlob(s));
+  }
+
+  @Nullable
   private <T> T get(T value) throws SQLException
   {
     if (mRs.wasNull())
@@ -243,6 +250,11 @@ public class ResultSetHelper implements Closeable
   public InputStream getNonnullBinaryStream(String s) throws SQLException
   {
     return getNonnull(s, get(mRs.getBinaryStream(s)));
+  }
+
+  public Blob getNonnullBlob(String s) throws SQLException
+  {
+    return getNonnull(s, get(mRs.getBlob(s)));
   }
 
   public int getColumnType(String s) throws SQLException
