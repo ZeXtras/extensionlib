@@ -20,6 +20,7 @@ package com.zextras.lib;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.zextras.lib.Error.MetadataKeyInvalidTypeFoundError;
 import com.zextras.lib.Error.MetadataKeyNotFoundError;
 import javax.annotation.Nonnull;
@@ -35,6 +36,7 @@ import java.util.Set;
 public class ContainerImpl implements Container
 {
   private static final ObjectWriter sJsonWriter = (new ObjectMapper()).writer();
+  private static final ObjectWriter sPrettyJsonWriter = (new ObjectMapper()).writerWithDefaultPrettyPrinter();
 
   @JsonProperty("privateMap")
   protected final Map<String, Object> mContainerMap;
@@ -526,6 +528,21 @@ public class ContainerImpl implements Container
     try
     {
       s = sJsonWriter.writeValueAsString( mContainerMap );
+    }
+    catch( Exception ex )
+    {
+      return null;
+    }
+    return s;
+  }
+
+  @Override
+  public String toPrettyJsonString()
+  {
+    String s;
+    try
+    {
+      s = sPrettyJsonWriter.writeValueAsString( mContainerMap );
     }
     catch( Exception ex )
     {

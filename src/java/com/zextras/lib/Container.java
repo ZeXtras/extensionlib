@@ -84,4 +84,6 @@ public interface Container extends Iterable<Map.Entry<String, Object>>, Serializ
   void remove(String key);
 
   boolean isEmpty();
+
+  String toPrettyJsonString();
 }
