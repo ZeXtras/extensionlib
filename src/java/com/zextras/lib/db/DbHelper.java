@@ -197,7 +197,15 @@ public class DbHelper
 
   public void query(String sql, ParametersFactory parametersFactory) throws SQLException
   {
-      executeQuery(beginConnection(),sql,parametersFactory);
+    DbConnection connection = beginConnection();
+    try
+    {
+      executeQuery(connection,sql,parametersFactory);
+    }
+    finally
+    {
+      IOUtils.closeQuietly(connection);
+    }
   }
 
   public void query(String sql, ParametersFactory parametersFactory, ResultSetFactory rsFactory) throws SQLException
