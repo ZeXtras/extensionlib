@@ -195,6 +195,11 @@ public class DbHelper
     query(sql, new NoParameters() ,rsFactory);
   }
 
+  public void query(String sql, ParametersFactory parametersFactory) throws SQLException
+  {
+      executeQuery(beginConnection(),sql,parametersFactory);
+  }
+
   public void query(String sql, ParametersFactory parametersFactory, ResultSetFactory rsFactory) throws SQLException
   {
     DbConnection connection = new DbConnection(mDbHandler.getConnection());
