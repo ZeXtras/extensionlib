@@ -26,5 +26,4 @@ public interface DbHandler extends Service
 {
   Connection getConnection() throws SQLException;
   String cleanSql(String sql);
-  String getClusterSchemaName();
 }
