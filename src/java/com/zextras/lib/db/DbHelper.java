@@ -81,6 +81,20 @@ public class DbHelper
       }
     }
 
+    public void beginConnection() throws SQLException
+    {
+      try
+      {
+        mOldAutoCommitState = mConnection.getAutoCommit();
+        mConnection.setAutoCommit(true);
+      }
+      catch (SQLException e)
+      {
+        DbUtils.closeQuietly(mConnection);
+        throw e;
+      }
+    }
+
     public void commit() throws SQLException
     {
       if (mOldAutoCommitState == null)
@@ -172,7 +186,9 @@ public class DbHelper
   // No transaction is started
   public DbConnection beginConnection() throws SQLException
   {
-    return new DbConnection(mDbHandler.getConnection());
+    DbConnection dbConnection = new DbConnection(mDbHandler.getConnection());
+    dbConnection.beginConnection();
+    return dbConnection;
   }
 
   public void rollbackAndClose(DbConnection connection)
@@ -319,8 +335,8 @@ public class DbHelper
             preparedStatement[0] = connection[0].prepareStatement(mDbHandler.cleanSql(query));
           }
           final int i = parametersFactory.init(preparedStatement[0]);
-          preparedStatement[0].setInt(i, start);
-          preparedStatement[0].setInt(i+1, size);
+          preparedStatement[0].setInt(i, size);
+          preparedStatement[0].setInt(i+1, start);
           return preparedStatement[0].executeQuery();
         }
 
