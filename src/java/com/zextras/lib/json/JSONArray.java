@@ -33,7 +33,7 @@ public class JSONArray extends ArrayList<Object> implements List<Object>
 
   static
   {
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = new KindObjectMapper();
     om.registerModule(new JsonOrgModule());
     sJsonReader = om.reader(JSONArray.class);
     sJsonWriter = om.writer();

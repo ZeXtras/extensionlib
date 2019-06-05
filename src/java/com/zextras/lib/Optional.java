@@ -69,11 +69,23 @@ public class Optional<T>
   {
     if( value == null )
     {
-      return sEmptyInstance;
+      return empty();
     }
     else
     {
-      return new Optional<X>(value);
+      return new Optional<>(value);
+    }
+  }
+
+  public static <X> Optional<X> of(Optional<X> value)
+  {
+    if( value == null )
+    {
+      return empty();
+    }
+    else
+    {
+      return value;
     }
   }
 

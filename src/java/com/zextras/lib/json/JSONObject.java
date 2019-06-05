@@ -36,7 +36,7 @@ public class JSONObject extends LinkedHashMap<String, Object>
 
   static
   {
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = new KindObjectMapper();
     om.registerModule(new JsonOrgModule());
     sJsonReader = om.reader(JSONObject.class);
     sJsonWriter = om.writer();

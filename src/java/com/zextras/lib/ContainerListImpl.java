@@ -21,13 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import javax.annotation.Nonnull;
 
+import com.zextras.lib.json.KindObjectMapper;
 import java.util.*;
 
 public abstract class ContainerListImpl<T>  implements ContainerList<T>
 {
   protected LinkedList<T> mList;
 
-  private static final ObjectWriter sJsonWriter = (new ObjectMapper()).writer();
+  private static final ObjectWriter sJsonWriter = (new KindObjectMapper()).writer();
 
   @Override
   public boolean equals(Object o)
