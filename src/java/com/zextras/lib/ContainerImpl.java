@@ -35,9 +35,11 @@ import java.util.Set;
 
 public class ContainerImpl implements Container
 {
+  private static final long serialVersionUID = 2477636520415349623L;
+
   private static final ObjectWriter sJsonWriter = (new ObjectMapper()).writer();
   private static final ObjectWriter sPrettyJsonWriter = (new ObjectMapper()).writerWithDefaultPrettyPrinter();
-
+  
   @JsonProperty("privateMap")
   protected final Map<String, Object> mContainerMap;
 
