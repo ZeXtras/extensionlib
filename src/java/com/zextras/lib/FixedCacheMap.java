@@ -125,4 +125,17 @@ public class FixedCacheMap<T extends Comparable, R>
     mMiss = 0L;
     mHits = 0L;
   }
+
+  public void clear()
+  {
+    mLock.lock();
+    try
+    {
+      mMap.clear();
+    }
+    finally
+    {
+      mLock.unlock();
+    }
+  }
 }

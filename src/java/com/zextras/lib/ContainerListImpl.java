@@ -19,15 +19,22 @@ package com.zextras.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.container.ContainerModule;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
 import javax.annotation.Nonnull;
+import com.zextras.lib.json.KindObjectMapper;
 
-import java.util.*;
-
-public abstract class ContainerListImpl<T>  implements ContainerList<T>
+public abstract class ContainerListImpl<T>  implements ContainerList<T>, Serializable
 {
   protected LinkedList<T> mList;
 
-  private static final ObjectWriter sJsonWriter = (new ObjectMapper()).writer();
+  private static final ObjectWriter sJsonWriter = (new KindObjectMapper()).writer();
 
   @Override
   public boolean equals(Object o)
