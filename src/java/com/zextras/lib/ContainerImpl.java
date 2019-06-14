@@ -24,6 +24,7 @@ import com.zextras.lib.Error.MetadataKeyInvalidTypeFoundError;
 import com.zextras.lib.Error.MetadataKeyNotFoundError;
 import javax.annotation.Nonnull;
 
+import com.zextras.lib.json.KindObjectMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import java.util.Set;
 
 public class ContainerImpl implements Container
 {
-  private static final ObjectWriter sJsonWriter = (new ObjectMapper()).writer();
+  private static final ObjectWriter sJsonWriter = (new KindObjectMapper()).writer();
 
   @JsonProperty("privateMap")
   protected final Map<String, Object> mContainerMap;

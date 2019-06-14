@@ -28,18 +28,13 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.annotation.Nonnull;
+import com.zextras.lib.json.KindObjectMapper;
 
 public abstract class ContainerListImpl<T>  implements ContainerList<T>, Serializable
 {
   protected LinkedList<T> mList;
 
-  private static final ObjectWriter sJsonWriter;
-  static
-  {
-    ObjectMapper om = new ObjectMapper();
-    om.registerModule(new ContainerModule());
-    sJsonWriter = om.writer();
-  }
+  private static final ObjectWriter sJsonWriter = (new KindObjectMapper()).writer();
 
   @Override
   public boolean equals(Object o)
