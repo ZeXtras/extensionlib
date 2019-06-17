@@ -18,6 +18,7 @@
 package com.zextras.lib.log;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.zextras.lib.Error.ZxError;
 import com.zextras.lib.UnableToFindLogger;
@@ -25,7 +26,6 @@ import com.zextras.lib.log.writers.ZELogWriter;
 import org.openzal.zal.Account;
 
 
-//TODO
 public class ZELogModule
 {
   @Deprecated
@@ -206,10 +206,10 @@ public class ZELogModule
     write(ex.getSeverity(), ex.getMessage());
   }
 
-  public synchronized void write( SeverityLevel level, String msg )
+  public void write( SeverityLevel level, String msg )
   {
     LogContext logContext = CurrentLogContext.current();
-    for( ZELogWriter writer : mLogWriterList )
+    for( ZELogWriter writer : mLogWriterList.get() )
     {
       if( writer.write(level, logContext,  msg) ) {
         break;
@@ -217,9 +217,9 @@ public class ZELogModule
     }
   }
 
-  public synchronized boolean isLogged( SeverityLevel level )
+  public boolean isLogged( SeverityLevel level )
   {
-    for( ZELogWriter writer : mLogWriterList )
+    for( ZELogWriter writer : mLogWriterList.get() )
     {
       if( writer.isLogged(level) ) {
         return true;
@@ -228,35 +228,72 @@ public class ZELogModule
     return false;
   }
 
-  public synchronized void addLogWriter( ZELogWriter logWriter )
+  public void addLogWriter( ZELogWriter logWriter )
   {
-    mLogWriterList.add(logWriter);
-    Collections.sort( mLogWriterList );
+    while (true)
+    {
+      List<ZELogWriter> current = mLogWriterList.get();
+      ArrayList<ZELogWriter> newList = new ArrayList<>(current);
+      newList.add(logWriter);
+      Collections.sort(newList);
+      if( mLogWriterList.compareAndSet(current, newList) ) break;
+    }
   }
 
-  public synchronized boolean removeLogWriter( int id, boolean onlyUserVisible )
+  public boolean removeLogWriter( int id, boolean onlyUserVisible )
   {
-    for( ZELogWriter logWriter : mLogWriterList )
+    while (true)
     {
-      if( (!onlyUserVisible || logWriter.isUserVisible()) &&
-          logWriter.getId() == id )
+      boolean found = false;
+
+      List<ZELogWriter> current = mLogWriterList.get();
+      ArrayList<ZELogWriter> newList = new ArrayList<>(current);
+
+      for (ZELogWriter logWriter : newList)
       {
-        mLogWriterList.remove( logWriter );
-        return true;
+        if ((!onlyUserVisible || logWriter.isUserVisible()) &&
+          logWriter.getId() == id)
+        {
+          newList.remove(logWriter);
+          if( mLogWriterList.compareAndSet(current, newList) )
+          {
+            return true;
+          }
+          else
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+
+      if( !found ) {
+        return false;
       }
     }
-    return false;
   }
 
-  public synchronized boolean removeLogWriter(ZELogWriter logWriter)
+  public boolean removeLogWriter(ZELogWriter logWriter)
   {
-    return mLogWriterList.remove(logWriter);
+    boolean result;
+
+    while (true)
+    {
+      List<ZELogWriter> current = mLogWriterList.get();
+      ArrayList<ZELogWriter> newList = new ArrayList<>(current);
+      result = newList.remove(logWriter);
+      if( mLogWriterList.compareAndSet(current, newList) ) {
+        break;
+      }
+    }
+
+    return result;
   }
 
-  public synchronized ZELogWriter getLogWriter(int id, boolean onlyUserVisible)
+  public ZELogWriter getLogWriter(int id, boolean onlyUserVisible)
     throws UnableToFindLogger
   {
-    for( ZELogWriter logWriter : mLogWriterList )
+    for( ZELogWriter logWriter : mLogWriterList.get() )
     {
       if( (!onlyUserVisible || logWriter.isUserVisible()) &&
         logWriter.getId() == id )
@@ -267,31 +304,38 @@ public class ZELogModule
     throw new UnableToFindLogger(id);
   }
 
-  public synchronized boolean removeAllLogWriters( boolean onlyUserVisible )
+  public boolean removeAllLogWriters( boolean onlyUserVisible )
   {
-    List<ZELogWriter> toBeDeleted = new LinkedList<ZELogWriter>();
-
-    for( ZELogWriter logWriter : mLogWriterList )
+    List<ZELogWriter> toBeDeleted;
+    while( true )
     {
-      if( !onlyUserVisible || logWriter.isUserVisible() )
+      toBeDeleted = new LinkedList<ZELogWriter>();
+      List<ZELogWriter> current = mLogWriterList.get();
+      ArrayList<ZELogWriter> newList = new ArrayList<>(current);
+
+      for (ZELogWriter logWriter : newList)
       {
-        toBeDeleted.add( logWriter );
+        if (!onlyUserVisible || logWriter.isUserVisible())
+        {
+          toBeDeleted.add(logWriter);
+        }
       }
-    }
 
-    for( ZELogWriter logWriter : toBeDeleted )
-    {
-      mLogWriterList.remove( logWriter );
+      for (ZELogWriter logWriter : toBeDeleted)
+      {
+        newList.remove(logWriter);
+      }
+      if( mLogWriterList.compareAndSet(current, newList) ) break;
     }
 
     return !toBeDeleted.isEmpty();
   }
 
-  public synchronized List<ZELogWriter> listLogWriter( boolean onlyUserVisible )
+  public List<ZELogWriter> listLogWriter( boolean onlyUserVisible )
   {
     List<ZELogWriter> list = new LinkedList<ZELogWriter>();
 
-    for( ZELogWriter logWriter : mLogWriterList )
+    for( ZELogWriter logWriter : mLogWriterList.get() )
     {
       if( (!onlyUserVisible || logWriter.isUserVisible()) )
       {
@@ -302,9 +346,9 @@ public class ZELogModule
     return list;
   }
 
-  public synchronized void flush()
+  public void flush()
   {
-    for(ZELogWriter logWriter : mLogWriterList)
+    for(ZELogWriter logWriter : mLogWriterList.get())
     {
       logWriter.flush();
     }
@@ -341,11 +385,11 @@ public class ZELogModule
     return sLevelNames.get(level);
   }
 
-  private final List<ZELogWriter> mLogWriterList;
+  private final AtomicReference<List<ZELogWriter>> mLogWriterList;
 
   public ZELogModule()
   {
-    mLogWriterList = new LinkedList<ZELogWriter>();
+    mLogWriterList = new AtomicReference(Collections.emptyList());
   }
 
 }
