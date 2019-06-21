@@ -47,6 +47,11 @@ public abstract class ContainerListImpl<T>  implements ContainerList<T>, Seriali
     {
       return false;
     }
+    if (!(o instanceof ContainerList))
+    {
+      System.out.println("Trying to compare ContainerList with object "+o.getClass().getSimpleName());
+      return false;
+    }
 
     ContainerListImpl that = (ContainerListImpl) o;
 
